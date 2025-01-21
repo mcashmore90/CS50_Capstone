@@ -2,7 +2,7 @@ Capstone project for HarvardX CS50’s Web Programming with Python and JavaScrip
 
 This project will be completed in multiple phases:
 
-Phase 1: Project Setup --complete--
+Phase 1: Project Setup --COMPLETE--
   Initial setup of the project and creation of the repository.
 
 Phase 2: API Service Setup
