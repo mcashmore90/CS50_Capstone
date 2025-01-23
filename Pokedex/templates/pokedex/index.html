@@ -2,23 +2,37 @@
 {%block body%}
     <h1>{{poke.name}} Id: {{poke.number}}</h1>
 
-    <p>{{poke.name}} Id: {{poke.number}}</p>
 
-    <img src="{{poke.picture}}" style="width: 100px;">
-    <ul>
-        <li>Health: {{stats.health}}</li>
-        <li>Attack: {{stats.attack}}</li>
-        <li>Defence: {{stats.defence}}</li>
-        <li>Sp Attack: {{stats.sp_attack}}</li>
-        <li>Sp Defence: {{stats.sp_defence}}</li>
-        <li>Speed: {{stats.speed}}</li>
-    </ul>
+<div style="display: flex;">
 
-    <ul> 
-        {%for move in moves%}
-
-        <li> {{move.name}} ACC: {{move.accuracy}} PW: {{move.power}} PP: {{move.pp}} {{move.description}}</li>
+    <div style="display: flex; flex-direction:column ;">
+        <div>
+        {%for type in poke.types%}
+            <img src="{{type.image}}" style="width: 50px;">
         {%endfor%}
-    </ul>
+        </div>
+        <img src="{{poke.image}}" style="width: 100px;">
+    </div>
+    <div>
+        <ul>
+            <li>Health: {{poke.stat.health}}</li>
+            <li>Attack: {{poke.stat.attack}}</li>
+            <li>Defence: {{poke.stat.defence}}</li>
+            <li>Sp Attack: {{poke.stat.sp_attack}}</li>
+            <li>Sp Defence: {{poke.stat.sp_defence}}</li>
+            <li>Speed: {{poke.stat.speed}}</li>
+        </ul>
+    </div>
+    <div>
+        <ul> 
+            {%for move in poke.moves%}
+             <img src="{{move.type.image}}" style="width: 50px;">
+            <li> {{move.name}} ACC: {{move.accuracy}} PW: {{move.power}} PP: {{move.pp}} {{move.description}} </li>
+            {%endfor%}
+        </ul>       
+    </div>
+
+</div>
+
 
 {%endblock%}

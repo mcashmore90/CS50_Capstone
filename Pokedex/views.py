@@ -1,12 +1,10 @@
 from django.shortcuts import render
 
-from .service import ApiService
-apiService = ApiService()
+from .services.api_service import ApiService
 
 
 def index(request):
     
-    poke = apiService.GetPokemon()
-    stats = apiService.GetStats()
-    moves = apiService.GetMoves()
-    return render(request, "pokedex/index.html",{"poke":poke, "stats":stats, "moves":moves})
+    poke = ApiService.GetPokemonById(1)
+    pokemonList = ApiService.GetPokemons()
+    return render(request, "pokedex/index.html",{"poke":poke, "list":pokemonList})
