@@ -1,5 +1,10 @@
 from django.shortcuts import render
 
-# Create your views here.
+from .services.api_service import ApiService
+
+
 def index(request):
-    return render(request, "pokedex/index.html")
+    
+    poke = ApiService.GetPokemonById(1)
+    pokemonList = ApiService.GetPokemons()
+    return render(request, "pokedex/index.html",{"poke":poke, "list":pokemonList})

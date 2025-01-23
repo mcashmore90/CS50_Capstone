@@ -1,4 +1,38 @@
 {%extends "pokedex/layout.html"%}
 {%block body%}
-    <h1>Hello World</h1>
+    <h1>{{poke.name}} Id: {{poke.number}}</h1>
+
+
+<div style="display: flex;">
+
+    <div style="display: flex; flex-direction:column ;">
+        <div>
+        {%for type in poke.types%}
+            <img src="{{type.image}}" style="width: 50px;">
+        {%endfor%}
+        </div>
+        <img src="{{poke.image}}" style="width: 100px;">
+    </div>
+    <div>
+        <ul>
+            <li>Health: {{poke.stat.health}}</li>
+            <li>Attack: {{poke.stat.attack}}</li>
+            <li>Defence: {{poke.stat.defence}}</li>
+            <li>Sp Attack: {{poke.stat.sp_attack}}</li>
+            <li>Sp Defence: {{poke.stat.sp_defence}}</li>
+            <li>Speed: {{poke.stat.speed}}</li>
+        </ul>
+    </div>
+    <div>
+        <ul> 
+            {%for move in poke.moves%}
+             <img src="{{move.type.image}}" style="width: 50px;">
+            <li> {{move.name}} ACC: {{move.accuracy}} PW: {{move.power}} PP: {{move.pp}} {{move.description}} </li>
+            {%endfor%}
+        </ul>       
+    </div>
+
+</div>
+
+
 {%endblock%}
