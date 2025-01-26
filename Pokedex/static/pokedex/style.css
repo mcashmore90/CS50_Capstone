@@ -2,3 +2,26 @@ h1{
     font-size: 90px;
     text-align: center;
 }
+
+.dpad:hover{
+    cursor: pointer;
+}
+
+.circle {
+    position: relative;
+    left: 30%;
+    top: 7%
+  }
+
+.shadow{
+    position:relative;
+    right:2%;
+    top:4%
+}
+
+
+.dpad-shadow{
+    position:relative;
+    left:5%;
+    top:7%;
+}

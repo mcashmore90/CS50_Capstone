@@ -9,11 +9,11 @@ This project will be completed in multiple phases:
 Phase 1: Project Setup --COMPLETE--
   Initial setup of the project and creation of the repository.
 
-Phase 2: API Service Setup
-  Create models to be used to return data from api call
+Phase 2: API Service Setup --COMPLETE--
+  Create models to be used to return data from api call 
   Initial creation and testing of APIs and return data to the front end.
 
-Phase 3: UI Testing/Setup
+Phase 3: UI Testing/Setup --COMPLETE--
   Testing creating certain objects for the UI with CSS. Initial layout of UI.
 
 Phase 4: Interaction

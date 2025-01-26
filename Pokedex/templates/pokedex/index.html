@@ -34,5 +34,65 @@
 
 </div>
 
+<p>Practising with shapes, tried to make a blue glass bulb with a 'shine' to it.</p>
+<div style="max-width:200px; aspect-ratio:1/1; background-color:gray; border-radius:50%; display:flex; align-items:center; justify-content:center">
+   <div style="width:95%; height: 95%; background-color:blue; border-radius:50%;  display:flex; align-items:center; justify-content:center">
+    <div class="" style="width: 80%; height: 80%; background-color:lightblue;border-radius:50%;">
+        <div class="shadow" style="width: 100%; height: 100%; background-color:blue; border-radius:50%;"></div>
+    </div>
+
+</div> 
+</div>
+
+<p>D-pad design that's responsive and has directional click event.</p>
+<div style="display:grid; grid-gap:0;  grid-template-columns: repeat(3,1fr); grid-template-rows:repeat(3,1fr);max-width:300px; aspect-ratio: 1 / 1;"><!--border: solid 1px black; background-color: brown; -->
+    <div ></div>
+    <div onClick="dpad('up')" class="dpad" style="border-top:2px solid black;border-left:2px solid black;border-right:2px solid black; background-color:gray; display:flex; justify-content:center; align-items:center;">
+        <div style="background-color:black; height:50%; width:50%; clip-path: polygon(50% 0, 100% 100%, 0 100%);">
+            <div class="dpad-shadow" style="background-color:darkgray; height:90%; width:90%; clip-path: polygon(50% 0, 100% 100%, 0 100%);">
+            
+            </div>
+        </div>
+    </div>
+    <div ></div>
+    <div class="dpad" onClick="dpad('left')" style="border-top:2px solid black;border-left:2px solid black;border-bottom:2px solid black;background-color:gray; display:flex; justify-content:center; align-items:center">
+        <div style="background-color:black; height:50%; width:50%; clip-path: polygon(50% 0, 100% 100%, 0 100%); rotate: -90deg;">
+            <div class="dpad-shadow" style="background-color:darkgray; height:90%; width:90%; clip-path: polygon(50% 0, 100% 100%, 0 100%);">
+            
+            </div>
+        </div>
+    </div>
+    <div style="background-color:gray; "></div>
+    <div class="dpad" onClick="dpad('right')"  style="border-top:2px solid black; border-right:2px solid black; border-bottom:2px solid black; background-color:gray; display:flex; justify-content:center; align-items:center">
+        <div class="outline-border"style=" background-color:black; height:50%; width:50%; clip-path: polygon(50% 0, 100% 100%, 0 100%);rotate: 90deg;">
+            <div class="dpad-shadow" style="background-color:darkgray; height:90%; width:90%; clip-path: polygon(50% 0, 100% 100%, 0 100%);">
+            
+            </div>
+        </div>
+    </div>
+    <div></div>
+    <div onClick="dpad('down')" class="dpad" style=" border-right:2px solid black;border-left:2px solid black;border-bottom:2px solid black; background-color:gray; display:flex; justify-content:center; align-items:center;">
+        <div style="background-color:black; height:50%; width:50%; clip-path: polygon(50% 0, 100% 100%, 0 100%);rotate: 180deg;">
+            <div class="dpad-shadow" style="background-color:darkgray; height:90%; width:90%; clip-path: polygon(50% 0, 100% 100%, 0 100%);">
+            
+            </div>
+        </div>
+    </div>
+    <div></div>
+</div>
+
+
+<p>Practising creating the various geometric shapes and positioning of shapes</p>
+<div style="padding-top: 3%;display: flex; align-items: flex-start; max-width:500px; position: relative; aspect-ratio: 4 / 1; background-color:red; clip-path: polygon(0 0, 100% 0, 100% 60%, 60% 60%, 45% 100%, 0 100%)" >
+    <div class="blue" style="margin-left: 3%; width: 20%; aspect-ratio:1/1; background-color:blue; border-radius:50%;" >     
+    </div>
+
+    <div class="yellow" style="margin-left: 1%; width: 5%; aspect-ratio:1/1; background-color:pink; border-radius:50%;" >      
+    </div>
+    <div class="yellow" style="margin-left: 1%; width: 5%; aspect-ratio:1/1; background-color:yellow; border-radius:50%;" >      
+    </div>
+    <div class="yellow" style="margin-left: 1%; width: 5%; aspect-ratio:1/1; background-color:green; border-radius:50%;" >      
+    </div>
+</div>
 
 {%endblock%}
