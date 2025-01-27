@@ -5,9 +5,24 @@ from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
 class ApiService:
     api_url = "https://pokeapi.co/api/v2/"
     limit = 5
+    offset = 0
     
     def GetPokemons():
-        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset=6")
+        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset={ApiService.offset}")
+        if request.status_code == 200:
+            response = request.json()
+            pokemonList = []
+            for result in response["results"]:
+                pokemonList.append(PokemonListDto(
+                    name = result["name"],
+                    url = result["url"]
+                ))
+            return pokemonList
+        
+        
+    def GetList():
+        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset={ApiService.offset}")
+        print(request)
         if request.status_code == 200:
             response = request.json()
             pokemonList = []

@@ -2,3 +2,7 @@ h1{
     font-size: 90px;
     text-align: center;
 }
+
+.selected{
+    background-color: red;
+}

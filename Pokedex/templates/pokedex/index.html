@@ -14,7 +14,7 @@
         <img src="{{poke.image}}" style="width: 100px;">
     </div>
     <div>
-        <ul>
+        <ul >
             <li>Health: {{poke.stat.health}}</li>
             <li>Attack: {{poke.stat.attack}}</li>
             <li>Defence: {{poke.stat.defence}}</li>
@@ -34,5 +34,33 @@
 
 </div>
 
+<ul id="listDisplay">
+  
+    {%for poke in pokemonlist%}
+   
+        <!-- {%if poke.name == request.session.selected %}
+            <li style="background-color: red;">{{poke.name}}</li>  
+        {%else%} -->
+        <li class="item">{{poke.name}}</li>  
+        <!-- {%endif%} -->
+    {%endfor%}
+</ul>
+
+<button onclick="selectNext()">Down</button>
+<button onclick="selectPrevious()">Up</button>
+
+
+<!--create li list. 
+variable that has selected item
+variable counter??..
+if statement to provide higlight selection
+up/down button click events +/- count > changes selected index
+    - if max count (151), get next section of pokemon list
+'enter' button get single/select pokemon
+
+use json body request to pass current info (list, count, selectd..) to view
+    -maybe session? (most likely will do)
+
+-->
 
 {%endblock%}
