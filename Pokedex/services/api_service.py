@@ -4,8 +4,6 @@ from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
 
 class ApiService:
     api_url = "https://pokeapi.co/api/v2/"
-    limit = 5
-    offset = 0
     
     def GetPokemons():
         request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset={ApiService.offset}")
@@ -20,20 +18,30 @@ class ApiService:
             return pokemonList
         
         
-    def GetList():
-        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset={ApiService.offset}")
-        print(request)
+    def getPokemonByUrl(name):
+        request = requests.get(f"{ApiService.api_url}pokemon/{name}")
         if request.status_code == 200:
             response = request.json()
-            pokemonList = []
-            for result in response["results"]:
-                pokemonList.append(PokemonListDto(
-                    name = result["name"],
-                    url = result["url"]
-                ))
-            return pokemonList
+            
+            stats = ApiService.GetStats(response["stats"])
+            moves_list = ApiService.GetMoves(response["moves"])
+            types_list = []
+            for type in response["types"]:
+                types_list.append(ApiService.GetType(type["type"]["url"]))
+            
+            pokemon= PokemonDto(
+                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
+                name = response["name"],
+                number = response["id"],
+                stat = stats,
+                moves=moves_list,
+                types = types_list
+            )
+            return pokemon
+            
+        else: 
+            return None
     
-    @staticmethod
     def GetPokemonById(id): #will have to change this to GetPokemonUrl. The URL is already provided in the list display.
         request = requests.get(F"{ApiService.api_url}pokemon/{id}/")
         if request.status_code == 200:
@@ -58,8 +66,6 @@ class ApiService:
         else: 
             return None
     
-      
-    @staticmethod    
     def GetStats(stats):
         currentStats = StatDto()
    
@@ -78,7 +84,6 @@ class ApiService:
                 currentStats.speed = stat["base_stat"]                
         return currentStats
     
-    @staticmethod
     def GetMoves(moves):
         move_urls = [move['move']['url'] for move in moves 
                           if any( version_group['version_group']['name'] 

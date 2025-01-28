@@ -1,54 +1,177 @@
-{%extends "pokedex/layout.html"%}
-{%block body%}
-    <h1>{{poke.name}} Id: {{poke.number}}</h1>
+{%extends "pokedex/layout.html"%} {%block body%}
+<h1>{{poke.name}} Id: {{poke.number}}</h1>
 
-
-<div style="display: flex;">
-
-    <div style="display: flex; flex-direction:column ;">
-        <div>
-        {%for type in poke.types%}
-            <img src="{{type.image}}" style="width: 50px;">
-        {%endfor%}
-        </div>
-        <img src="{{poke.image}}" style="width: 100px;">
-    </div>
+<div style="display: flex">
+  <div style="display: flex; flex-direction: column">
     <div>
-        <ul >
-            <li>Health: {{poke.stat.health}}</li>
-            <li>Attack: {{poke.stat.attack}}</li>
-            <li>Defence: {{poke.stat.defence}}</li>
-            <li>Sp Attack: {{poke.stat.sp_attack}}</li>
-            <li>Sp Defence: {{poke.stat.sp_defence}}</li>
-            <li>Speed: {{poke.stat.speed}}</li>
-        </ul>
+      {%for type in poke.types%}
+      <img src="{{type.image}}" style="width: 50px" />
+      {%endfor%}
     </div>
-    <div>
-        <ul> 
-            {%for move in poke.moves%}
-             <img src="{{move.type.image}}" style="width: 50px;">
-            <li> {{move.name}} ACC: {{move.accuracy}} PW: {{move.power}} PP: {{move.pp}} {{move.description}} </li>
-            {%endfor%}
-        </ul>       
-    </div>
-
+    <img src="{{poke.image}}" style="width: 100px" />
+  </div>
+  <div>
+    <ul>
+      <li>Health: {{poke.stat.health}}</li>
+      <li>Attack: {{poke.stat.attack}}</li>
+      <li>Defence: {{poke.stat.defence}}</li>
+      <li>Sp Attack: {{poke.stat.sp_attack}}</li>
+      <li>Sp Defence: {{poke.stat.sp_defence}}</li>
+      <li>Speed: {{poke.stat.speed}}</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      {%for move in poke.moves%}
+      <img src="{{move.type.image}}" style="width: 50px" />
+      <li>
+        {{move.name}} ACC: {{move.accuracy}} PW: {{move.power}} PP: {{move.pp}}
+        {{move.description}}
+      </li>
+      {%endfor%}
+    </ul>
+  </div>
 </div>
 
-<ul id="listDisplay">
+<div style="display: flex;">
+    <div id="app"></div>
+    <div id="detail"></div>
+</div>
+
+<script type="text/babel">
+    const { useEffect, useState } = React;
+    
+
+    function App() {
+      const [state, setState] = React.useState({
+        selectIndex: 0,
+        pokemonList: [],
+        pokemon:{}
+      });
   
+      useEffect(() => {
+        fetch('/getlist')
+        .then(response=>response.json())
+        .then(result=>{
+          console.log(result.newList)
+          setState({
+              ...state,
+              pokemonList: result.newList
+  
+          })
+        })
+      }, []);
+  
+      function selectNext(){
+          setState({...state, selectIndex: state.selectIndex+1})
+      }
+  
+      function selectPokemon(){
+        console.log(state.pokemonList[state.selectIndex].name)
+          fetch("/pokemon/"+state.pokemonList[state.selectIndex].name)
+          .then(response =>response.json())
+          .then(result=>{
+            console.log(result)
+            
+            display(result.pokemon)
+          })
+      }
+  
+      return (
+          <div>
+          <ul>
+              {state.pokemonList.map((item, index) => (
+                  <li
+                      key={item.id}
+                      style={{
+                          backgroundColor: index === state.selectIndex ? 'yellow' : 'white'
+                      }}
+                  >
+                      {item.name}
+                  </li>
+              ))}
+          </ul>
+          <button onClick={selectNext}>Down</button>
+          <button onClick={selectPokemon}>select </button>
+      </div>
+      );
+    }
+  
+    ReactDOM.render(<App />, document.getElementById("app"));
+  </script>
+ <!--<div id="listDisplay">
+ 
     {%for poke in pokemonlist%}
    
-        <!-- {%if poke.name == request.session.selected %}
+         {%if poke.name == request.session.selected %}
             <li style="background-color: red;">{{poke.name}}</li>  
-        {%else%} -->
+        {%else%}
         <li class="item">{{poke.name}}</li>  
-        <!-- {%endif%} -->
+        {%endif%} 
     {%endfor%}
-</ul>
-
+</div>-->
+<!--
 <button onclick="selectNext()">Down</button>
-<button onclick="selectPrevious()">Up</button>
+<button onclick="selectPrevious()">Up</button>-->
+{% comment %} 
+<div id="app"></div>
+<script type="text/babel">
+  const { useEffect, useState } = React;
+  
+  function App() {
+    const [state, setState] = React.useState({
+      selectIndex: 0,
+      pokemonList: [],
+      pokemon:{}
+    });
 
+    useEffect(() => {
+      console.log("useeffecting");
+      fetch('/getlist')
+      .then(response=>response.json())
+      .then(result=>{
+        console.log(result.newList)
+        setState({
+            ...state,
+            pokemonList: result.newList
+
+        })
+      })
+    }, []);
+
+    function selectNext(){
+        setState({...state, selectIndex: state.selectIndex+1})
+    }
+
+    function selectPokemon(){
+        setState({
+            ...state,
+            pokemon: state.pokemonList[state.selectIndex]})
+    }
+
+    return (
+        <div>
+        <ul>
+            {state.pokemonList.map((item, index) => (
+                <li
+                    key={item.id}
+                    style={{
+                        backgroundColor: index === state.selectIndex ? 'yellow' : 'white'
+                    }}
+                >
+                    {item.name}
+                </li>
+            ))}
+        </ul>
+        selected: {state.pokemon.name}
+        <button onClick={selectNext}>Down</button>
+        <button onClick={selectPokemon}>select </button>
+    </div>
+    );
+  }
+
+  ReactDOM.render(<App />, document.querySelector("#app"));
+</script> {% endcomment %}
 
 <!--create li list. 
 variable that has selected item
@@ -64,3 +187,66 @@ use json body request to pass current info (list, count, selectd..) to view
 -->
 
 {%endblock%}
+
+<!--
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const App = () => {
+    const [items, setItems] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        fetchItems();
+    }, []);
+
+    const fetchItems = async () => {
+        try {
+            const response = await axios.get('/api/items/');
+            setItems(response.data);
+        } catch (error) {
+            console.error('Error fetching items:', error);
+        }
+    };
+
+    const selectPrevious = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
+    };
+
+    const selectNext = () => {
+        if (currentIndex < items.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+    const selectItem = () => {
+        alert(`Selected item: ${items[currentIndex].name}`);
+    };
+
+    return (
+        <div>
+            <ul>
+                {items.map((item, index) => (
+                    <li
+                        key={item.id}
+                        style={{
+                            backgroundColor: index === currentIndex ? 'yellow' : 'white'
+                        }}
+                    >
+                        {item.name}
+                    </li>
+                ))}
+            </ul>
+            <button onClick={selectPrevious}>Up</button>
+            <button onClick={selectNext}>Down</button>
+            <button onClick={selectItem}>Enter</button>
+        </div>
+    );
+};
+
+export default App;
+
+-->

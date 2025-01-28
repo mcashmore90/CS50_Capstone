@@ -5,6 +5,9 @@ from .services.api_service import ApiService
 import json
 
 selectIndex = 0
+offset = 0
+limit = 6
+pokemonCount=0
 
 def index(request):
     
@@ -12,25 +15,18 @@ def index(request):
     pokemonList = ApiService.GetPokemons()
     print(pokemonList)
    
-    
-
     return render(request, "pokedex/index.html",{"poke":poke, "pokemonlist":pokemonList, })
 
 
-def updateSelection(request):
-    print('at api')
-    #data = json.loads(request.body)
-    #post = Post.objects.get(id = data["postId"])
-    data = json.loads(request.body)
-    print(data)
-    print(data)
-    ApiService.offset+=data
+def getPokemons(request):
+    pokemonlist = ApiService.GetPokemons()
     
-    poke = ApiService.GetList()
-    print(poke)
-    pokemonData = [pokemon.to_dict() for pokemon in poke]
-    # global selectIndex
-    # selectIndex +=int(dir)
-    # pokemonList = ApiService.GetPokemons()
-    # request.session["selected"]=pokemonList[selectIndex].name
+    pokemonData = [pokemon.to_dict() for pokemon in pokemonlist]
+    
     return JsonResponse({"newList":pokemonData},safe=False)
+
+def getPokemonbyUrl(request, name):
+    print("At url")
+    poke = ApiService.getPokemonByUrl(name)
+    
+    return JsonResponse({"pokemon":poke.to_dic()},safe=False)
