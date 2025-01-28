@@ -5,20 +5,19 @@ from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
 class ApiService:
     api_url = "https://pokeapi.co/api/v2/"
     
-    def GetPokemons():
-        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset={ApiService.offset}")
+    def GetPokemon(limit, offset):
+        request = requests.get(f"{ApiService.api_url}pokemon?limit={limit}&offset={offset}")
         if request.status_code == 200:
             response = request.json()
             pokemonList = []
             for result in response["results"]:
                 pokemonList.append(PokemonListDto(
-                    name = result["name"],
-                    url = result["url"]
+                    name = result["name"]
                 ))
             return pokemonList
         
         
-    def getPokemonByUrl(name):
+    def GetPokemonByName(name):
         request = requests.get(f"{ApiService.api_url}pokemon/{name}")
         if request.status_code == 200:
             response = request.json()
@@ -41,31 +40,7 @@ class ApiService:
             
         else: 
             return None
-    
-    def GetPokemonById(id): #will have to change this to GetPokemonUrl. The URL is already provided in the list display.
-        request = requests.get(F"{ApiService.api_url}pokemon/{id}/")
-        if request.status_code == 200:
-            response = request.json()
-            
-            stats = ApiService.GetStats(response["stats"])
-            moves_list = ApiService.GetMoves(response["moves"])
-            types_list = []
-            for type in response["types"]:
-                types_list.append(ApiService.GetType(type["type"]["url"]))
-            
-            pokemon= PokemonDto(
-                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
-                name = response["name"],
-                number = response["id"],
-                stat = stats,
-                moves=moves_list,
-                types = types_list
-            )
-            return pokemon
-            
-        else: 
-            return None
-    
+
     def GetStats(stats):
         currentStats = StatDto()
    

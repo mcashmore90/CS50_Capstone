@@ -1,4 +1,93 @@
 {%extends "pokedex/layout.html"%} {%block body%}
+
+
+<div>
+    <div id="list" style="width: 50%;"></div>
+
+    <div id="detail"></div>
+</div>
+
+
+<script type="text/babel">
+
+    function List(){
+        const { useEffect, useState } = React;
+        const [currentIndex, setIndex] = React.useState(0)
+        const [pokemonList, setPokemonList] = React.useState([])
+
+        useEffect(() => {
+            fetch('/pokemon')
+            .then(response=>response.json())
+            .then(result=>{
+                console.log(result)
+              setPokemonList(result.pokemon)
+            })
+          }, []);
+
+        const selectPrevious = () => {
+           if (currentIndex > 0) {
+            setIndex(currentIndex - 1);
+            }
+            else{
+                fetch("/pokemon-previous")
+                .then(response=>response.json())
+                .then(result=>{
+                    setIndex(result.pokemon.length-1)
+                    setPokemonList(result.pokemon)
+                })
+            }
+        };
+    
+        const selectNext = () => {
+            if (currentIndex < pokemonList.length - 1) {
+                setIndex(currentIndex + 1);
+            }
+            else{
+                fetch("/pokemon-next",{
+                    method: 'POST',
+                    headers:{
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        index:currentIndex
+                    }),})
+                .then(response=>response.json())
+                .then(result=>{
+                    console.log(result)
+                    setIndex(0)
+                    setPokemonList(result.pokemon)
+                })
+
+            }
+        };
+
+        return (
+            <div>
+            <ul>
+                {pokemonList.map((item, index) => (
+                    <li className={index === currentIndex ? 'selected' : ''}
+                        key={item.id}
+                    >
+                        {item.name}
+                    </li>
+                ))}
+            </ul>
+            <button onClick={selectPrevious}>Up</button>
+            <button onClick={selectNext}>Down</button>
+        </div>
+        );
+    }
+
+    ReactDOM.render(<List />, document.getElementById("list"));
+</script>
+
+
+
+
+
+
+
 <h1>{{poke.name}} Id: {{poke.number}}</h1>
 
 <div style="display: flex">
@@ -37,7 +126,7 @@
     <div id="app"></div>
     <div id="detail"></div>
 </div>
-
+ <!--<
 <script type="text/babel">
     const { useEffect, useState } = React;
     
@@ -99,7 +188,7 @@
   
     ReactDOM.render(<App />, document.getElementById("app"));
   </script>
- <!--<div id="listDisplay">
+div id="listDisplay">
  
     {%for poke in pokemonlist%}
    
@@ -113,65 +202,6 @@
 <!--
 <button onclick="selectNext()">Down</button>
 <button onclick="selectPrevious()">Up</button>-->
-{% comment %} 
-<div id="app"></div>
-<script type="text/babel">
-  const { useEffect, useState } = React;
-  
-  function App() {
-    const [state, setState] = React.useState({
-      selectIndex: 0,
-      pokemonList: [],
-      pokemon:{}
-    });
-
-    useEffect(() => {
-      console.log("useeffecting");
-      fetch('/getlist')
-      .then(response=>response.json())
-      .then(result=>{
-        console.log(result.newList)
-        setState({
-            ...state,
-            pokemonList: result.newList
-
-        })
-      })
-    }, []);
-
-    function selectNext(){
-        setState({...state, selectIndex: state.selectIndex+1})
-    }
-
-    function selectPokemon(){
-        setState({
-            ...state,
-            pokemon: state.pokemonList[state.selectIndex]})
-    }
-
-    return (
-        <div>
-        <ul>
-            {state.pokemonList.map((item, index) => (
-                <li
-                    key={item.id}
-                    style={{
-                        backgroundColor: index === state.selectIndex ? 'yellow' : 'white'
-                    }}
-                >
-                    {item.name}
-                </li>
-            ))}
-        </ul>
-        selected: {state.pokemon.name}
-        <button onClick={selectNext}>Down</button>
-        <button onClick={selectPokemon}>select </button>
-    </div>
-    );
-  }
-
-  ReactDOM.render(<App />, document.querySelector("#app"));
-</script> {% endcomment %}
 
 <!--create li list. 
 variable that has selected item

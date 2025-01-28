@@ -89,9 +89,8 @@ class PokemonDto:
         }
     
 class PokemonListDto:
-    def __init__(self, name, url):
+    def __init__(self, name):
         self.name = name
-        self.url = url
         
     def __str__(self):
         return self.name
@@ -101,6 +100,5 @@ class PokemonListDto:
     
     def to_dict(self):
         return {
-            'name': self.name,
-            'url': self.url,
+            'name': self.name
         }
