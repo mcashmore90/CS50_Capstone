@@ -2,3 +2,25 @@ h1{
     font-size: 90px;
     text-align: center;
 }
+
+.selected{
+    background-color: red;
+}
+
+.container-size{
+    display: flex;
+    width: 50%;
+}
+
+.container-direction{
+    display:flex;
+    flex-direction: column;
+}
+
+.icon-image{
+    width: 50px;
+}
+
+.pokemon-image{
+    width: 100px;
+}

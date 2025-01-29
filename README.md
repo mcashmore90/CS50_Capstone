@@ -22,5 +22,8 @@ Phase 4: Interaction
 Phase 5: Data Retrieval 
   Create full functional API to get all required data and display on the UI
 
+Phase 5.A: Basic Layout
+  layout foundation for the webpage 
+
 Phase 6: Final Process
   Complete all required UI and functionality for project.

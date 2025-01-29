@@ -4,23 +4,21 @@ from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
 
 class ApiService:
     api_url = "https://pokeapi.co/api/v2/"
-    limit = 5
     
-    def GetPokemons():
-        request = requests.get(f"{ApiService.api_url}pokemon?limit={ApiService.limit}&offset=6")
+    def GetPokemon(limit, offset):
+        request = requests.get(f"{ApiService.api_url}pokemon?limit={limit}&offset={offset}")
         if request.status_code == 200:
             response = request.json()
             pokemonList = []
             for result in response["results"]:
                 pokemonList.append(PokemonListDto(
-                    name = result["name"],
-                    url = result["url"]
+                    name = result["name"]
                 ))
             return pokemonList
-    
-    @staticmethod
-    def GetPokemonById(id): #will have to change this to GetPokemonUrl. The URL is already provided in the list display.
-        request = requests.get(F"{ApiService.api_url}pokemon/{id}/")
+        
+        
+    def GetPokemonByName(name):
+        request = requests.get(f"{ApiService.api_url}pokemon/{name}")
         if request.status_code == 200:
             response = request.json()
             
@@ -42,9 +40,7 @@ class ApiService:
             
         else: 
             return None
-    
-      
-    @staticmethod    
+
     def GetStats(stats):
         currentStats = StatDto()
    
@@ -63,7 +59,6 @@ class ApiService:
                 currentStats.speed = stat["base_stat"]                
         return currentStats
     
-    @staticmethod
     def GetMoves(moves):
         move_urls = [move['move']['url'] for move in moves 
                           if any( version_group['version_group']['name'] 
