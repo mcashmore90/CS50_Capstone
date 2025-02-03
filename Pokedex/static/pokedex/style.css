@@ -27,17 +27,173 @@ body{
     --green-light:#61b344;
     --green-light-hl:#acd3ac;
     
-    --outline-size: 2px;
-    --max-left-panel-width: 580px;
-    --max-right-panel-width:500px;
-    --max-middle-width:50px;
-    --total-width:  1050px;
+    --outline-size: 3px;
+    --max-left-panel-width: 600px;
+    --max-right-panel-width:520px;
+    --max-middle-width:80px;
+    --max-height: 850px;
+    --max-width:  1300px;
 }
 
 .pokedex{
+    margin:0 auto;
+    display:flex;
+    justify-content: center;
+    max-width: var(--max-width);
+    height: var(--max-height)
+}
+
+.left-panel{
+    max-width: var(--max-left-panel-width);
+    width:100%; 
+    background-color: var(--red-bg);
+    border: var(--outline-size) solid var(--black-outline);
+    height:100%;
+    
+}
+
+.top-shadow{
+    height: 140px;
+    width: 100%;
+    background-color: var(--black-outline);
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 60%, 40% 100%, 0 100%); 
+   
+}
+
+.top-bar{
+    max-width: 100%;
+    background-color: var(--red-bg);
+    height: 140px;
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 60%, 40% 100%, 0 100%);
+    position:relative;
+    bottom: var(--outline-size);
+}
+
+.light-layout{
+    display:flex;
+    padding-top:10px;
+}
+
+.blue-frame{
+    width: 110px;
+    height: 110px;
+    background-color: var(--light-frame);
+    border-radius: 50%;
+    margin-left: 15px;
+    margin-top:5px;
+    display: flex;
+    border: var(--outline-size) solid var(--black-outline);
+    justify-content: center;
+    align-items: center;
+}
+
+.blue-light{
+    width:80%;
+    height:80%;
+    border-radius: 50%;
+    border: var(--outline-size) solid var(--black-outline);
+    background-color:var(--blue-light);
+}
+
+.red-light{
+    width:20px;
+    height:20px;
+    border: var(--outline-size) solid var(--black-outline);
+    background-color: var(--red-light);
+    margin-left: 20px;
+    border-radius: 50%;
+}
+
+.yellow-light{
+    width:20px;
+    height:20px;
+    border: var(--outline-size) solid var(--black-outline);
+    background-color: var(--yellow-light);
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
+.green-light{
+    width:20px;
+    height:20px;
+    border: var(--outline-size) solid var(--black-outline);
+    background-color: var(--green-light);
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
+.main{
+    display: flex;
+    position: relative;
+    top: -56px;
+}
+
+.side-hinge{
+    height: 767px;
+    width: 80px;
+    border-left: var(--outline-size) solid var(--black-outline);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.top-hinge{
+    height: 60px;
+    border-bottom: var(--outline-size) solid var(--black-outline);
+}
+
+.bottom-hinge{
+    height: 60px;
+    border-top: var(--outline-size) solid var(--black-outline);
+}
+
+.display-layout{
+    width: 370px;
+    height: 275px;
+    padding-top: 30px;
+    border-radius: 5%;
+    background-color: var(--screen-frame);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%); 
+    margin: 0 auto;
+    margin-top:85px;
+}
+
+.display-control-layout{
+    width: 100%;
+}
+.display{
+    width: 310px;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--screen-bg);
+    margin: 0 auto;
+    box-sizing: border-box;
+    border: var(--outline-size) solid var(--black-outline);
+    border-radius: 5px;
+}
+
+.list-display {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+} 
+
+.controls{
+    width: 350px;
+    height: 120px;
+    background-color: var(--screen-bg);
+    margin: 0 auto;
+    margin-top: 70px;
+}
+/* 
+.pokedex{
    
     margin:0 auto;
-    display:flex
+    display:flex;
+    max-width: 1000px;
 }
 
 
@@ -46,6 +202,13 @@ body{
     display: block;
     max-width: var(--max-left-panel-width);
     width:100%
+}
+
+.right-panel{
+    width: 100%;
+    background-color: var(--red-bg);
+    max-width: 500px;
+    aspect-ratio: 1/1;
 }
 
 .background{
@@ -63,6 +226,7 @@ body{
 .top {
     aspect-ratio: 13/3;
     width: 100%;
+    min-height:100px;
     background-color: var(--red-bg);
     clip-path: polygon(0 0, 100% 0, 100% 50%, 60% 50%, 50% 100%, 0 100%);
     position:relative;
@@ -75,22 +239,24 @@ body{
 
 .top-light-layout
 {
-   padding-top:3px;
-   padding-left:3px;
     align-items: flex-start; 
     display: flex;
+    margin-top: 10px;
+    margin-left:10px;
+    padding-bottom: 20px;
 }
 
 
 .blue-frame{
     
-    width: 20%;
-    aspect-ratio:1/1;
+    width: 100px;
+    height: 100px;
     background-color:var(--light-frame); 
     border-radius:50%; 
     display:flex; 
     align-items:center; 
     justify-content:center;
+    
     border: var(--outline-size) solid var(--black-outline)
 }
 
@@ -164,4 +330,4 @@ body{
     list-style-type: none;
     padding: 0;
     margin: 0;
-}
+} */
