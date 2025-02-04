@@ -42,6 +42,7 @@ body{
 
 .left-panel{
     max-width: 600px;
+    min-width: 320px;
     width:100%; 
     background-color: var(--red-bg);
     border: var(--outline-size) solid var(--black-outline);
@@ -280,16 +281,82 @@ body{
     
 }
 
-.dpad-up{
-    border-top:2px solid black;
-    border-left:2px solid black;
-    border-right:2px solid black; 
-    background-color:gray; 
+.dpad-up, .dpad-left, .dpad-middle, .dpad-right, .dpad-down{
+    background-color:var(--black-btn);
     display:flex; 
     justify-content:center; 
     align-items:center;
+}
+
+.dpad-up{
+    border-top:var(--outline-size) solid var(--black-outline);
+    border-left:var(--outline-size) solid var(--black-outline);
+    border-right:var(--outline-size) solid var(--black-outline);
     box-sizing: border-box;
 }
+
+
+.dpad-left{
+    border-top:var(--outline-size) solid var(--black-outline);
+    border-bottom:var(--outline-size) solid var(--black-outline);
+    border-left:var(--outline-size) solid var(--black-outline);
+    /* rotate: -90deg; */
+}
+
+.dpad-right{
+    border-top:var(--outline-size) solid var(--black-outline);
+    border-right:var(--outline-size) solid var(--black-outline);
+    border-bottom:var(--outline-size) solid var(--black-outline);
+    /* rotate:90deg; */
+}
+
+.dpad-down{
+    border-bottom:var(--outline-size) solid var(--black-outline);
+    border-left:var(--outline-size) solid var(--black-outline);
+    border-right:var(--outline-size) solid var(--black-outline);
+    box-sizing: border-box;
+    /* rotate:180deg; */
+}
+
+.dpad-circle{
+    height:20px;
+    width: 20px;
+    border-radius: 50%;
+    border: var(--outline-size) solid var(--black-outline);
+    background-color: var(--black-btn-hl);
+}
+
+.dpad-arrow-outline-up,.dpad-arrow-outline-left,.dpad-arrow-outline-right,.dpad-arrow-outline-down{
+    background-color:var(--black-outline);
+    height:20px; 
+    width:20px; 
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.dpad-arrow-up, .dpad-arrow-left, .dpad-arrow-right, .dpad-arrow-down{
+    background-color:var(--black-btn-hl); 
+    height:15px; 
+    width:14px;  
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    position:relative;
+    left: var(--outline-size);
+    top: var(--outline-size)
+}
+
+.dpad-arrow-outline-left{
+    rotate: -90deg;
+}
+
+.dpad-arrow-outline-right{
+    rotate: 90deg;
+}
+
+.dpad-arrow-outline-down{
+    rotate: 180deg;
+}
+
+
+
 
 .top-outline{
     height: 140px;
@@ -345,7 +412,7 @@ body{
 
 .right-layout{
     background-color: red;
-    height: 100%;
+    height: 508px;
     border-bottom: var(--outline-size) solid var(--black-outline);
     border-right: var(--outline-size) solid var(--black-outline);
 }
