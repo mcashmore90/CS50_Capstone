@@ -518,3 +518,9 @@ Variables
     border: var(--outline-size) solid var(--black-outline);
     border-radius: 5px;
 }
+
+
+.display-info{
+    display: flex;
+    justify-content: space-evenly;
+}
