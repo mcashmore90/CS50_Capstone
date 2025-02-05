@@ -4,16 +4,56 @@
 
 <script type="text/babel">
 
-  function Pokedex() {
+function Pokedex() {
+    const { useEffect, useState } = React;
+    const [currentIndex, setIndex] = React.useState(0)
+    const [pokemonList, setPokemonList] = React.useState([])
+
+    useEffect(() => {
+        fetch('/pokemon')
+          .then(response => response.json())
+          .then(result => {
+            setPokemonList(result.pokemon);
+            console.log(currentIndex)
+            console.log(pokemonList)
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }, []);
+
+      useEffect(()=>{
+        console.log(currentIndex)
+      },[currentIndex]);
+
+      const handleClickEvent = () => {
+        setIndex(currentIndex + 1);
+        alert('Button clicked in child, called parent function!');
+      };
+
+      const selectNext = () => {
+        console.log('clicked')
+
+        if (currentIndex < pokemonList.length - 1) {
+            setIndex(currentIndex + 1);
+        }
+        else{
+            fetch("/pokemon-next")
+            .then(response=>response.json())
+            .then(result=>{
+                setIndex(result.index)
+                setPokemonList(result.pokemon)
+            })
+        }
+    };
+
     return (
       <div className="pokedex">
-        <LeftPanelDisplay />
+        <LeftPanelDisplay data={pokemonList} clickEventClick={selectNext} />
         <RightPanelDisplay />
       </div>
     );
   }
 
-  function LeftPanelDisplay() {
+  const LeftPanelDisplay = ({ data, clickEventClick }) => {
     return (
       <div class="left-panel">
         <div class="top-shadow">
@@ -36,7 +76,7 @@
                 <div class="red-dot"></div>
                 <div class="red-dot"></div>
               </div>
-              <Screen/>
+              <Screen data={data}/>
               <div class="display-bottom">
                 <div class="bottom-red-dot"></div>
                 <div>
@@ -48,7 +88,7 @@
               </div>
             </div>
 
-            <Controls/>
+            <Controls handleClick={clickEventClick} />
           </div>
 
           <div class="side-hinge">
@@ -60,21 +100,25 @@
     );
   }
 
-  function Screen() {
+const Screen=({data})=> {
+    const [currentIndex, setIndex] = React.useState(0)
     return (
-      <div className="screen">
-        <ul className="list">
-          <li className="select-item">bulbasaur</li>
-          <li>ivysaur</li>
-          <li>venusaur</li>
-          <li>charmander</li>
-          <li>charmeleon</li>
-        </ul>
-      </div>
+        <div className="screen">
+            <ul className="list">
+                {data.map((item, index) => (
+                    <li className={index === currentIndex ? 'select-item' : ''}
+                        key={item.id}
+                    >
+                        {item.name}
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
   }
 
-  function Controls() {
+const Controls = ({ handleClick }) =>{
+
     return (
       <div className="controls">
         <div className="select-btn"></div>
@@ -107,14 +151,16 @@
             </div>
           </div>
           <div></div>
-          <div className="dpad-down">
+          <div className="dpad-down"  onClick={handleClick}>
             <div className="dpad-arrow-outline-down">
-              <div className="dpad-arrow-down"></div>
+                <div className="dpad-arrow-down"></div>
             </div>
           </div>
           <div></div>
         </div>
       </div>
+
+      
     );
   }
 

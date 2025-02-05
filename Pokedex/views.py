@@ -5,7 +5,7 @@ from .services.api_service import ApiService
 import json
 
 offset = 0
-limit = 6
+limit = 5
 maxPokemonCount = 151
 
 def index(request):
