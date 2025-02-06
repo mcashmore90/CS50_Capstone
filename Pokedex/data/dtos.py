@@ -64,16 +64,17 @@ class MoveDto:
         }
 
 class PokemonDto:
-    def __init__(self, image, name, number, stat, moves, types ):
+    def __init__(self, image, name, number, description, stat, moves, types ):
         self.image = image
         self.name = name
         self.number = number
+        self.description = description
         self.stat = stat
         self.moves = moves
         self.types = types
         
     def __str__(self):
-        return self.name
+        return self.description
 
     def __repr__(self):
         return self.__str__()
@@ -83,6 +84,7 @@ class PokemonDto:
             "image":self.image,
             "name":self.name,
             "number":self.number,
+            "desc": self.description,
             "stat":self.stat.to_dic(),
             "moves": [move.to_dic() for move in self.moves],
             "types": [type.to_dic() for type in self.types]
