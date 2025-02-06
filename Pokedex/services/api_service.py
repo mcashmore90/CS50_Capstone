@@ -12,7 +12,7 @@ class ApiService:
             pokemonList = []
             for result in response["results"]:
                 pokemonList.append(PokemonListDto(
-                    name = result["name"]
+                    name = result["name"].replace('-', ' ').upper()
                 ))
             return pokemonList
         
@@ -27,11 +27,13 @@ class ApiService:
             types_list = []
             for type in response["types"]:
                 types_list.append(ApiService.GetType(type["type"]["url"]))
+            description = ApiService.GetDescription(response["species"]["url"])
             
             pokemon= PokemonDto(
                 image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
-                name = response["name"],
+                name = response["name"].replace('-', ' ').upper(),
                 number = response["id"],
+                description = description,
                 stat = stats,
                 moves=moves_list,
                 types = types_list
@@ -69,9 +71,9 @@ class ApiService:
             if request.status_code == 200:
                 data = request.json()
                 moves.append(MoveDto(
-                    name = data["name"],
+                    name = data["name"].replace('-', ' ').upper(),
                     power = data["power"],
-                    description = data["effect_entries"][0]["short_effect"],
+                    description = data["effect_entries"][0]["short_effect"].replace('\n', ' ').replace('\f', ' ').upper(),
                     accuracy = data["accuracy"],
                     pp = data["pp"],
                     type= ApiService.GetType(data["type"]["url"])
@@ -86,4 +88,13 @@ class ApiService:
             response = request.json()
             return TypeDto(name=response["name"], image = response["sprites"]["generation-iii"]["emerald"]["name_icon"])
         
-        
+    def GetDescription(url):
+        print(url)
+        request = requests.get(url)
+        if request.status_code == 200:
+            data = request.json()
+            desc = next((entry['flavor_text'] for entry in data["flavor_text_entries"] if entry['version']['name'] == 'yellow'), "").replace('\n', ' ').replace('\f', ' ').upper()
+            return desc
+            
+        else:
+            return None

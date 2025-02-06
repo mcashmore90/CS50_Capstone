@@ -1,59 +1,89 @@
-{% extends 'pokedex/layout.html' %}
-{% block body %}
+{% extends 'pokedex/layout.html' %} {% block body %}
 <div id="pokedex"></div>
 
-<script type="text/babel">
+<div id="scroll"></div>
 
-function Pokedex() {
+<script type="text/babel">
+  function Pokedex() {
     const { useEffect, useState } = React;
-    const [currentIndex, setIndex] = React.useState(0)
-    const [pokemonList, setPokemonList] = React.useState([])
+    const [currentIndex, setIndex] = React.useState(0);
+    const [pokemonList, setPokemonList] = React.useState([]);
+    const [selectedPokemon, setSelectedPokemon] = React.useState({});
+    const [isViewDetail, setIsViewDetail] = React.useState(false)
 
     useEffect(() => {
-        fetch('/pokemon')
-          .then(response => response.json())
-          .then(result => {
-            setPokemonList(result.pokemon);
-            console.log(currentIndex)
-            console.log(pokemonList)
-          })
-          .catch(error => console.error('Error fetching data:', error));
-      }, []);
+      fetch("/pokemon")
+        .then((response) => response.json())
+        .then((result) => {
+          setPokemonList(result.pokemon);
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+    }, []);
 
-      useEffect(()=>{
-        console.log(currentIndex)
-      },[currentIndex]);
-
-      const handleClickEvent = () => {
+    const selectNext = () => {
+      if (currentIndex < pokemonList.length - 1) {
         setIndex(currentIndex + 1);
-        alert('Button clicked in child, called parent function!');
-      };
+      } else {
+        fetch("/pokemon-next")
+          .then((response) => response.json())
+          .then((result) => {
+            setIndex(result.index);
+            setPokemonList(result.pokemon);
+          });
+      }
+    };
 
-      const selectNext = () => {
-        console.log('clicked')
+    const selectPrevious = () => {
+      if (currentIndex > 0) {
+        setIndex(currentIndex - 1);
+      } else {
+        fetch("/pokemon-previous")
+          .then((response) => response.json())
+          .then((result) => {
+            setIndex(result.index);
+            setPokemonList(result.pokemon);
+          });
+      }
+    };
 
-        if (currentIndex < pokemonList.length - 1) {
-            setIndex(currentIndex + 1);
-        }
-        else{
-            fetch("/pokemon-next")
-            .then(response=>response.json())
-            .then(result=>{
-                setIndex(result.index)
-                setPokemonList(result.pokemon)
-            })
-        }
+    const selectItem = () => {
+      fetch(`pokemon/${pokemonList[currentIndex].name}`)
+        .then((response) => response.json())
+        .then((result) => {
+          setSelectedPokemon(result.pokemon);
+        });
+    };
+
+    const backFunction = () => {
+      setSelectedPokemon({});
     };
 
     return (
       <div className="pokedex">
-        <LeftPanelDisplay data={pokemonList} clickEventClick={selectNext} />
-        <RightPanelDisplay />
+        <LeftPanelDisplay
+          data={pokemonList}
+          selectNext={selectNext}
+          selectPrevious={selectPrevious}
+          currentIndex={currentIndex}
+          selectItem={selectItem}
+          pokemonImage={selectedPokemon.image}
+          backFunction={backFunction}
+        />
+
+        <RightPanelDisplay selectedPokemon={selectedPokemon}/>
       </div>
     );
   }
 
-  const LeftPanelDisplay = ({ data, clickEventClick }) => {
+  const LeftPanelDisplay = ({
+    data,
+    selectNext,
+    selectPrevious,
+    currentIndex,
+    selectItem,
+    pokemonImage,
+    backFunction,
+  }) => {
     return (
       <div class="left-panel">
         <div class="top-shadow">
@@ -76,7 +106,11 @@ function Pokedex() {
                 <div class="red-dot"></div>
                 <div class="red-dot"></div>
               </div>
-              <Screen data={data}/>
+              <Screen
+                data={data}
+                currentIndex={currentIndex}
+                pokemonImage={pokemonImage}
+              />
               <div class="display-bottom">
                 <div class="bottom-red-dot"></div>
                 <div>
@@ -88,7 +122,12 @@ function Pokedex() {
               </div>
             </div>
 
-            <Controls handleClick={clickEventClick} />
+            <Controls
+              selectNext={selectNext}
+              selectPrevious={selectPrevious}
+              selectItem={selectItem}
+              backFunction={backFunction}
+            />
           </div>
 
           <div class="side-hinge">
@@ -98,30 +137,39 @@ function Pokedex() {
         </div>
       </div>
     );
-  }
+  };
 
-const Screen=({data})=> {
-    const [currentIndex, setIndex] = React.useState(0)
+  const Screen = ({ data, currentIndex, pokemonImage }) => {
     return (
-        <div className="screen">
-            <ul className="list">
-                {data.map((item, index) => (
-                    <li className={index === currentIndex ? 'select-item' : ''}
-                        key={item.id}
-                    >
-                        {item.name}
-                    </li>
-                ))}
-            </ul>
-        </div>
+      <div className="screen">
+        {pokemonImage ? (
+          <img className="pokemonImage" src={pokemonImage} alt="Pokemon" />
+          
+        ) : (
+          <ul className="list">
+            {data.map((item, index) => (
+              <li
+                className={index === currentIndex ? "select-item" : ""}
+                key={item.id}
+              >
+                {item.name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     );
-  }
+  };
 
-const Controls = ({ handleClick }) =>{
-
+  const Controls = ({
+    selectNext,
+    selectPrevious,
+    selectItem,
+    backFunction,
+  }) => {
     return (
       <div className="controls">
-        <div className="select-btn"></div>
+        <div className="select-btn" onClick={selectItem}>{false?"ENTER":"BACK"}</div>
         <div className="middle-control">
           <div className="bar">
             <div className="red-bar"></div>
@@ -131,13 +179,13 @@ const Controls = ({ handleClick }) =>{
         </div>
         <div className="dpad-control">
           <div></div>
-          <div className="dpad-up">
+          <div className="dpad-up" onClick={selectPrevious}>
             <div className="dpad-arrow-outline-up">
               <div className="dpad-arrow-up"></div>
             </div>
           </div>
           <div></div>
-          <div className="dpad-left">
+          <div className="dpad-left" onClick={backFunction}>
             <div className="dpad-arrow-outline-left">
               <div className="dpad-arrow-left"></div>
             </div>
@@ -151,20 +199,26 @@ const Controls = ({ handleClick }) =>{
             </div>
           </div>
           <div></div>
-          <div className="dpad-down"  onClick={handleClick}>
+          <div className="dpad-down" onClick={selectNext}>
             <div className="dpad-arrow-outline-down">
-                <div className="dpad-arrow-down"></div>
+              <div className="dpad-arrow-down"></div>
             </div>
           </div>
           <div></div>
         </div>
       </div>
-
-      
     );
-  }
+  };
 
-  function RightPanelDisplay() {
+  const RightPanelDisplay = ({selectedPokemon}) =>{
+    const { useEffect, useState } = React;
+
+    const [selectedTab, setSelectedTab] = React.useState("info");
+
+    const selectTab = (tab) => {
+      setSelectedTab(tab);
+    };
+
     return (
       <div className="right-panel">
         <div className="top-outline">
@@ -172,8 +226,8 @@ const Controls = ({ handleClick }) =>{
         </div>
         <div className="right-panel-body">
           <div className="right-layout">
-            <DetailScreen />
-            <DetailControls />
+            <DetailScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon} />
+            <DetailControls selectTab={selectTab} />
             <div className="right-top-btn">
               <div className="top-red-lights">
                 <div className="top-red-light"></div>
@@ -186,8 +240,8 @@ const Controls = ({ handleClick }) =>{
             </div>
             <div className="right-middle-btn">
               <div className="white-btns">
-                <div className="white-btn"></div>
-                <div className="white-btn"></div>
+                <div className="white-btn">UP</div>
+                <div className="white-btn">DOWN</div>
               </div>
               <div className="yellow-btn"></div>
             </div>
@@ -201,36 +255,59 @@ const Controls = ({ handleClick }) =>{
     );
   }
 
-  function DetailScreen() {
+  function DetailScreen({ selectedTab, selectedPokemon }) {
     return (
-      <div className="detail-screen">
-        <div className="display-info">
-          <div>
-            <div>________</div>
-            <div>bulbasaur</div>
-            <div>id: 1</div>
+    <div className="detail-screen">
+      {selectedPokemon && (
+        <React.Fragment>
+          <div className={`display-info ${selectedTab === "info" ? "" : "hide-detail"}`}>
+            {selectedPokemon.name ? <div>Name: {selectedPokemon.name}</div>:""}
+            
           </div>
-          <div>
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-iii/colosseum/12.png" />
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-iii/colosseum/4.png" />
-            <div>height: 7</div>
-            <div>weight: 50</div>
+          <div className={`display-info ${selectedTab === "desc" ? "" : "hide-detail"}`}>
+            {selectedPokemon.desc ? <div> {selectedPokemon.desc}</div>:""}
           </div>
-        </div>
-        <div className="display-desc hide-detail">bbbb</div>
-        <div className="display-stats hide-detail">cccc</div>
-        <div className="display-moves hide-detail">dddd</div>
-      </div>
-    );
+          <div className={`display-info ${selectedTab === "stats" ? "" : "hide-detail"}`}>
+            {selectedPokemon.stat && selectedPokemon.stat.health
+              ? 
+              <div>Health: {selectedPokemon.stat.health} </div>
+              : ""}
+          </div>
+          <div className={`display-info ${selectedTab === "moves" ? "" : "hide-detail"}`}>
+            <ul className="list ">
+              {selectedPokemon.moves && selectedPokemon.moves.length > 0 ? (
+                selectedPokemon.moves.map((move, index) => (
+                  <React.Fragment key={index}>
+                    <div className="move-list-display">
+                      <li>{move.name}</li>
+                      <img src={move.type && move.type.image} className="icon-image" alt={move.name} />
+                    </div>
+                  </React.Fragment>
+                ))
+              ) : (<div></div> )}
+            </ul>
+          </div>
+        </React.Fragment>
+      )}
+    </div>
+  );
   }
 
-  function DetailControls() {
+  function DetailControls({ selectTab }) {
     return (
       <div className="blue-btn-layout">
-        <div className="blue-button-info">INFO</div>
-        <div className="blue-button-desc">DESC.</div>
-        <div className="blue-button-stats">STATS</div>
-        <div className="blue-button-moves">MOVES</div>
+        <div className="blue-button-info" onClick={() => selectTab("info")}>
+          INFO
+        </div>
+        <div className="blue-button-desc" onClick={() => selectTab("desc")}>
+          DESC.
+        </div>
+        <div className="blue-button-stats" onClick={() => selectTab("stats")}>
+          STATS
+        </div>
+        <div className="blue-button-moves" onClick={() => selectTab("moves")}>
+          MOVES
+        </div>
         <div className="blue-button"></div>
         <div className="blue-button"></div>
         <div className="blue-button"></div>
@@ -241,6 +318,70 @@ const Controls = ({ handleClick }) =>{
     );
   }
 
+  
+  const ScrollComponent = () => {
+    const { useEffect, useState } = React;
+    // Create a reference to the scrollable container
+    const scrollContainerRef = React.useState(null);
+  
+    // Function to scroll the container by a specific amount (e.g., 100px)
+    const scrollUp = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollBy({
+          top: -100, // Negative to scroll up
+          behavior: 'smooth',
+        });
+      }
+    };
+  
+    const scrollDown = () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollBy({
+          top: 100, // Positive to scroll down
+          behavior: 'smooth',
+        });
+      }
+    };
+  
+    return (
+      <div>
+        {/* Buttons to control the scroll */}
+        <button onClick={scrollUp}>Scroll Up</button>
+        <button onClick={scrollDown}>Scroll Down</button>
+  
+        {/* Scrollable container */}
+        <div
+          ref={scrollContainerRef}
+          style={{
+            width: '300px',
+            height: '200px',
+            overflowY: 'auto', // Make it scrollable vertically
+            border: '1px solid #000',
+            marginTop: '10px',
+          }}
+        >
+          {/* Add a lot of content to make the container scrollable */}
+          <div >
+            <h3>Item 1</h3>
+            <p>Content here...</p>
+            <h3>Item 2</h3>
+            <p>Content here...</p>
+            <h3>Item 3</h3>
+            <p>Content here...</p>
+            <h3>Item 4</h3>
+            <p>Content here...</p>
+            <h3>Item 5</h3>
+            <p>Content here...</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
   ReactDOM.render(<Pokedex />, document.querySelector("#pokedex"));
+
+
+
+
 </script>
 {% endblock %}

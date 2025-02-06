@@ -1,5 +1,11 @@
 body{
-    font-size: 34px;
+    font-size: 20px;
+    color:var(--black-btn);
+    font-family: "Pixelify Sans", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
 }
 /*========================
 Variables
@@ -33,11 +39,12 @@ Variables
 }
 
 .hide-detail{
-    display: none;
+    display: none !important;
 }
 
 .select-item{
-    background-color: var(--screen-frame);
+    background-color: var(--black-btn);
+    color: white;
 }
 
 .pokedex{
@@ -194,11 +201,16 @@ Variables
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--screen-bg);
+    background-color: white;
     margin: 0 auto;
     box-sizing: border-box;
     border: var(--outline-size) solid var(--black-outline);
     border-radius: 5px;
+}
+
+.pokemonImage{
+    width:200px;
+    height:200px;
 }
 
 .display-bottom{
@@ -229,6 +241,8 @@ Variables
     list-style-type: none;
     padding: 0;
     margin: 0;
+    font-size: 30px;
+    text-align: center;
 } 
 
 
@@ -245,8 +259,13 @@ Variables
     height:60px;
     width:60px;
     border-radius: 50%;
+    color: var(--black-btn-hl);
     background-color: var(--black-btn);
     border: var(--outline-size) solid var(--black-outline);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:18px;
 }
 
 .select-btn:hover{
@@ -414,7 +433,14 @@ Variables
     height: 120px;
     border-radius: 5px;
     border: var(--outline-size) solid var(--black-outline);
-    background-color: var(--screen-bg);
+    background-color: white;
+}
+
+.move-list-display{
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    margin:0 auto;
 }
 
 .blue-btn-layout{
@@ -485,6 +511,7 @@ Variables
 
 .white-btns{
     display: flex;
+    
 }
 
 .white-btn{
@@ -493,6 +520,11 @@ Variables
     background-color: var(--light-frame);
     border: var(--outline-size) solid var(--black-outline);
     border-radius: 5px;
+    font-size: 22px;
+    color: var(--black-btn);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .yellow-btn{
@@ -522,5 +554,10 @@ Variables
 
 .display-info{
     display: flex;
+    width:100%;
     justify-content: space-evenly;
+}
+
+.icon-image{
+    width: 50px;
 }
