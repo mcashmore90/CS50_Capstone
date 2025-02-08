@@ -25,7 +25,7 @@ Phase 5: Data Retrieval  --COMPLETE--
 Phase 5.A: Basic Layout --COMPLETE--
   layout foundation for the webpage 
 
-Phase 5.B: Detail layout
+Phase 5.B: Detail layout --COMPLETE--
   Complete layout of the various detail screens.
 
 Phase 5.C Improve UI/UX layout and feedback
