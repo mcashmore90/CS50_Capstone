@@ -10,12 +10,15 @@
     const [pokemonList, setPokemonList] = React.useState([]);
     const [selectedPokemon, setSelectedPokemon] = React.useState({});
     const [isViewDetail, setIsViewDetail] = React.useState(false)
+    const [selectedTab, setSelectedTab] = React.useState("info");
+    const [isMoveDetail, setIsMoveDetail] = React.useState(false);
 
     useEffect(() => {
       fetch("/pokemon")
         .then((response) => response.json())
         .then((result) => {
           setPokemonList(result.pokemon);
+          console.log(selectedPokemon)
         })
         .catch((error) => console.error("Error fetching data:", error));
     }, []);
@@ -47,15 +50,31 @@
     };
 
     const selectItem = () => {
-      fetch(`pokemon/${pokemonList[currentIndex].name}`)
-        .then((response) => response.json())
-        .then((result) => {
-          setSelectedPokemon(result.pokemon);
-        });
+      setIsViewDetail((prevState) => {
+        if (!prevState) { 
+          fetch(`pokemon/${pokemonList[currentIndex].name}`)
+            .then((response) => response.json())
+            .then((result) => {
+              setSelectedPokemon(result.pokemon);
+            });
+        }
+        else{
+          setSelectedPokemon({});
+          selectTab('info');
+        }
+        return !prevState;
+      });
+        
     };
 
-    const backFunction = () => {
-      setSelectedPokemon({});
+    const selectTab = (tab) => {
+      setSelectedTab(tab);
+      if(tab=="moves"){
+        setIsMoveDetail(true)
+      }
+      else{
+        setIsMoveDetail(false)
+      }
     };
 
     return (
@@ -67,10 +86,10 @@
           currentIndex={currentIndex}
           selectItem={selectItem}
           pokemonImage={selectedPokemon.image}
-          backFunction={backFunction}
+          isViewDetail={isViewDetail}
         />
 
-        <RightPanelDisplay selectedPokemon={selectedPokemon}/>
+        <RightPanelDisplay selectedPokemon={selectedPokemon} selectedTab={selectedTab} selectTab={selectTab} isMoveDetail={isMoveDetail}/>
       </div>
     );
   }
@@ -82,7 +101,7 @@
     currentIndex,
     selectItem,
     pokemonImage,
-    backFunction,
+    isViewDetail,
   }) => {
     return (
       <div class="left-panel">
@@ -110,6 +129,7 @@
                 data={data}
                 currentIndex={currentIndex}
                 pokemonImage={pokemonImage}
+                isViewDetail={isViewDetail}
               />
               <div class="display-bottom">
                 <div class="bottom-red-dot"></div>
@@ -126,7 +146,7 @@
               selectNext={selectNext}
               selectPrevious={selectPrevious}
               selectItem={selectItem}
-              backFunction={backFunction}
+              isViewDetail={isViewDetail}
             />
           </div>
 
@@ -139,19 +159,16 @@
     );
   };
 
-  const Screen = ({ data, currentIndex, pokemonImage }) => {
+  const Screen = ({ data, currentIndex, pokemonImage,isViewDetail }) => {
     return (
       <div className="screen">
-        {pokemonImage ? (
+        { pokemonImage ? (
           <img className="pokemonImage" src={pokemonImage} alt="Pokemon" />
           
         ) : (
           <ul className="list">
             {data.map((item, index) => (
-              <li
-                className={index === currentIndex ? "select-item" : ""}
-                key={item.id}
-              >
+              <li className={index === currentIndex ? "select-item" : ""} key={item.id}>
                 {item.name}
               </li>
             ))}
@@ -165,11 +182,11 @@
     selectNext,
     selectPrevious,
     selectItem,
-    backFunction,
+    isViewDetail,
   }) => {
     return (
       <div className="controls">
-        <div className="select-btn" onClick={selectItem}>ENTER</div>
+        <div className="select-btn hoverable" onClick={selectItem}>{isViewDetail?"BACK":"ENTER"}</div>
         <div className="middle-control">
           <div className="bar">
             <div className="red-bar"></div>
@@ -179,13 +196,13 @@
         </div>
         <div className="dpad-control">
           <div></div>
-          <div className="dpad-up" onClick={selectPrevious}>
+          <div className="dpad-up hoverable" onClick={!isViewDetail ? selectPrevious : null} >
             <div className="dpad-arrow-outline-up">
               <div className="dpad-arrow-up"></div>
             </div>
           </div>
           <div></div>
-          <div className="dpad-left" onClick={backFunction}>
+          <div className="dpad-left">
             <div className="dpad-arrow-outline-left">
               <div className="dpad-arrow-left"></div>
             </div>
@@ -199,7 +216,7 @@
             </div>
           </div>
           <div></div>
-          <div className="dpad-down" onClick={selectNext}>
+          <div className="dpad-down hoverable" onClick={!isViewDetail ? selectNext: null}>
             <div className="dpad-arrow-outline-down">
               <div className="dpad-arrow-down"></div>
             </div>
@@ -210,14 +227,37 @@
     );
   };
 
-  const RightPanelDisplay = ({selectedPokemon}) =>{
-    const { useEffect, useState } = React;
+  const RightPanelDisplay = ({selectedPokemon,selectedTab,selectTab,isMoveDetail}) =>{
+    const { useState,useEffect } = React;
+    const [moveIndex, setMoveIndex] = useState(0);
+    const [isMoreInfo, setIsMoreInfo] = useState(false)
 
-    const [selectedTab, setSelectedTab] = React.useState("info");
+    useEffect(()=>{
+      setMoveIndex(0);
+      setIsMoreInfo(false)
+    },[selectedPokemon, selectedTab]);
 
-    const selectTab = (tab) => {
-      setSelectedTab(tab);
-    };
+    const selectNextMove=()=>{
+       console.log(selectedPokemon.moves)
+       console.log(moveIndex)
+      if(moveIndex < selectedPokemon.moves.length-1)
+      {
+        setMoveIndex(moveIndex+1)
+      }
+    }
+
+    const selectPreviousMove=()=>{
+      if(moveIndex > 0)
+      {
+        setMoveIndex(moveIndex-1)
+      }
+    }
+
+    const showMore=()=>{
+      setIsMoreInfo((prevState)=>{
+        return !prevState
+      })
+    }
 
     return (
       <div className="right-panel">
@@ -226,7 +266,7 @@
         </div>
         <div className="right-panel-body">
           <div className="right-layout">
-            <DetailScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon} />
+            <DetailScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon} moveIndex={moveIndex} isMoreInfo={isMoreInfo}/>
             <DetailControls selectTab={selectTab} />
             <div className="right-top-btn">
               <div className="top-red-lights">
@@ -238,13 +278,7 @@
                 <div className="top-black-bar"></div>
               </div>
             </div>
-            <div className="right-middle-btn">
-              <div className="white-btns">
-                <div className="white-btn">UP</div>
-                <div className="white-btn">DOWN</div>
-              </div>
-              <div className="yellow-btn"></div>
-            </div>
+            <DetailScreenControls selectNextMove={selectNextMove} selectPreviousMove={selectPreviousMove} showMore={showMore} isMoveDetail={isMoveDetail}/>
             <div className="right-bottom-btn">
               <div className="bottom-btn"></div>
               <div className="bottom-btn"></div>
@@ -255,57 +289,96 @@
     );
   }
 
-  function DetailScreen({ selectedTab, selectedPokemon }) {
+  const DetailScreen=({ selectedTab, selectedPokemon, moveIndex,isMoreInfo })=> {
+
     return (
-    <div className="detail-screen">
-      {selectedPokemon && (
+      <div className="detail-screen">
+        
+        {selectedPokemon  && Object.keys(selectedPokemon).length > 0 &&(
         <React.Fragment>
-          <div className={`display-info ${selectedTab === "info" ? "" : "hide-detail"}`}>
-            {selectedPokemon.name ? <div>Name: {selectedPokemon.name}</div>:""}
+          <DetailInfoScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon}/>
+          <DetailDescriptionScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon}/>
+          <DetailStatsScreen selectedTab={selectedTab} stat={selectedPokemon.stat}/>
+          <DetailMoveScreen selectedTab={selectedTab} moves={selectedPokemon.moves} moveIndex={moveIndex} isMoreInfo={isMoreInfo}/>
+        </React.Fragment>
+        )}
+      </div>
+  )
+  }
+
+  const DetailInfoScreen=({selectedPokemon, selectedTab})=>{
+    return(
+      <div className={selectedTab === "info" ? "" : "hide"}>
+        <div className="detail-info-screen">
+          <div>{selectedPokemon.name} </div>
+          <div># {selectedPokemon.number} </div>
+          <div className="info-screen-types">
+            {(selectedPokemon.types || []).map((type) => (
+              <img src={type.image} className="icon-image" alt={type.name} key={type.name} />
+            ))}
+          </div>
+      </div>
+      <div>HEIGHT: {selectedPokemon.height} m</div>
+      <div>WEIGHT: {selectedPokemon.weight} Kg</div>
+      </div>
+    )
+  }
+
+  const DetailDescriptionScreen =({selectedPokemon, selectedTab})=>{
+    return(
+      <div className={`display-desc ${selectedTab === "desc" ? "" : "hide"}`}>
+        {selectedPokemon.desc}
+      </div>
+    )
+  }
+
+  const DetailStatsScreen=({stat, selectedTab})=>{
+    return(
+      <div className={`display-stats ${selectedTab === "stats" ? "" : "hide"}`}>
+        <div>HEALTH: {stat.health}</div>
+        <div>SP. ATK: {stat.sp_attack}</div>
+        <div>ATK: {stat.attack}</div>
+        <div>SP. DEF: {stat.sp_defence}</div>
+        <div>DEF: {stat.defence}</div>
+        <div>SPEED: {stat.speed}</div>
+      </div>
+    )
+  }
+
+  const DetailMoveScreen=({moves, selectedTab, moveIndex,isMoreInfo})=>{
+    return(
+      <div className={`${selectedTab === "moves" ? "" : "hide"}`}>
+        
+        {(moves|| []).map((move, index) => (
+          <React.Fragment>
+          <div className={`${index===moveIndex && isMoreInfo? "":"hide"}`}>{move.description}</div>
+          <div className={`display-stats ${index === moveIndex  && !isMoreInfo? "" : "hide"}`}>
             
-          </div>
-          <div className={`display-info ${selectedTab === "desc" ? "" : "hide-detail"}`}>
-            {selectedPokemon.desc ? <div> {selectedPokemon.desc}</div>:""}
-          </div>
-          <div className={`display-info ${selectedTab === "stats" ? "" : "hide-detail"}`}>
-            {selectedPokemon.stat && selectedPokemon.stat.health
-              ? 
-              <div>Health: {selectedPokemon.stat.health} </div>
-              : ""}
-          </div>
-          <div className={`display-info ${selectedTab === "moves" ? "" : "hide-detail"}`}>
-            <ul className="list ">
-              {selectedPokemon.moves && selectedPokemon.moves.length > 0 ? (
-                selectedPokemon.moves.map((move, index) => (
-                  <React.Fragment key={index}>
-                    <div className="move-list-display">
-                      <li>{move.name}</li>
-                      <img src={move.type && move.type.image} className="icon-image" alt={move.name} />
-                    </div>
-                  </React.Fragment>
-                ))
-              ) : (<div></div> )}
-            </ul>
+              <div>{move.name}</div>
+              <img src={move.type.image} className="icon-image" alt={move.type.name} />
+            <div>ACC: {move.accuracy}</div>      
+            <div>PP: {move.pp}</div>
+          <div>POWER: {move.power}</div>       
           </div>
         </React.Fragment>
-      )}
+        ))} 
     </div>
-  );
+    )
   }
 
   function DetailControls({ selectTab }) {
     return (
       <div className="blue-btn-layout">
-        <div className="blue-button-info" onClick={() => selectTab("info")}>
+        <div className="blue-button-info hoverable" onClick={() => selectTab("info")}>
           INFO
         </div>
-        <div className="blue-button-desc" onClick={() => selectTab("desc")}>
+        <div className="blue-button-desc hoverable" onClick={() => selectTab("desc")}>
           DESC.
         </div>
-        <div className="blue-button-stats" onClick={() => selectTab("stats")}>
+        <div className="blue-button-stats hoverable" onClick={() => selectTab("stats")}>
           STATS
         </div>
-        <div className="blue-button-moves" onClick={() => selectTab("moves")}>
+        <div className="blue-button-moves hoverable" onClick={() => selectTab("moves")}>
           MOVES
         </div>
         <div className="blue-button"></div>
@@ -318,7 +391,19 @@
     );
   }
 
+  const DetailScreenControls=({selectNextMove,selectPreviousMove,showMore,isMoveDetail})=>{
+    return(
+      <div className="right-middle-btn">
+        <div className="white-btns">
+          <div className={`white-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?selectPreviousMove:null}>{isMoveDetail?"PREV.":""}</div>
+          <div className={`white-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?selectNextMove:null}>{isMoveDetail?"NEXT":""}</div>
+        </div>
+        <div className={`yellow-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?showMore:null}>{isMoveDetail?"MORE INFO":""}</div>
+      </div>
+    )
+  }
+  
   ReactDOM.render(<Pokedex />, document.querySelector("#pokedex"));
-
+  
 </script>
 {% endblock %}

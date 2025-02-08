@@ -1,6 +1,6 @@
 import requests
 from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
-
+from decimal import Decimal
 
 class ApiService:
     api_url = "https://pokeapi.co/api/v2/"
@@ -28,16 +28,19 @@ class ApiService:
             for type in response["types"]:
                 types_list.append(ApiService.GetType(type["type"]["url"]))
             description = ApiService.GetDescription(response["species"]["url"])
-            
+
             pokemon= PokemonDto(
                 image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
                 name = response["name"].replace('-', ' ').upper(),
                 number = response["id"],
+                height= str((Decimal(response["height"]) * Decimal(0.1)).quantize(Decimal('0.01'))),
+                weight= str((Decimal(response["weight"]) * Decimal(0.1)).quantize(Decimal('0.01'))),
                 description = description,
                 stat = stats,
                 moves=moves_list,
                 types = types_list
             )
+            
             return pokemon
             
         else: 
@@ -86,7 +89,7 @@ class ApiService:
         request = requests.get(url)
         if request.status_code == 200:
             response = request.json()
-            return TypeDto(name=response["name"], image = response["sprites"]["generation-iii"]["emerald"]["name_icon"])
+            return TypeDto(name=response["name"], image = response["sprites"]["generation-ix"]["scarlet-violet"]["name_icon"])
         
     def GetDescription(url):
         print(url)

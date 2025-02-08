@@ -1,5 +1,5 @@
 body{
-    font-size: 20px;
+    font-size: 30px;
     color:var(--black-btn);
     font-family: "Pixelify Sans", serif;
     font-optical-sizing: auto;
@@ -38,13 +38,17 @@ Variables
     --max-right-panel-width:520px;
 }
 
-.hide-detail{
+.hide{
     display: none !important;
 }
 
 .select-item{
     background-color: var(--black-btn);
     color: white;
+}
+
+.hoverable{
+    cursor: pointer;
 }
 
 .pokedex{
@@ -268,10 +272,6 @@ Variables
     font-size:18px;
 }
 
-.select-btn:hover{
-    cursor: pointer;
-}
-
 .middle-control{
     width: 180px;
 }
@@ -319,9 +319,6 @@ Variables
     align-items:center;
 }
 
-.dpad-up, .dpad-left, .dpad-right, .dpad-down:hover{
-    cursor: pointer;
-}
 
 .dpad-up{
     border-top:var(--outline-size) solid var(--black-outline);
@@ -436,12 +433,39 @@ Variables
     background-color: white;
 }
 
-.move-list-display{
+.display-info{
+    display: flex;
+    width:100%;
+    justify-content: space-evenly;
+}
+
+.detail-info-screen{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info-screen-types{
+    display: flex;
+}
+
+.display-desc {
+    font-size: 26px;
+}
+
+.display-stats{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+/* .move-list-display{
     width: 300px;
     display: flex;
     justify-content: space-between;
     margin:0 auto;
-}
+} */
 
 .blue-btn-layout{
     width: 100%;
@@ -462,9 +486,6 @@ Variables
     justify-content: center;
 }
 
-.blue-button-info, .blue-button-desc, .blue-button-stats, .blue-button-moves:hover{
-    cursor: pointer;
-}
 
 .right-top-btn{
     margin-top: 20px;
@@ -520,7 +541,7 @@ Variables
     background-color: var(--light-frame);
     border: var(--outline-size) solid var(--black-outline);
     border-radius: 5px;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--black-btn);
     display: flex;
     justify-content: center;
@@ -528,12 +549,18 @@ Variables
 }
 
 .yellow-btn{
-    width:80px;
-    height:80px;
+    font-size: 18px;
+    text-align: center;
+    width: 80px;
+    height: 80px;
     border: var(--outline-size) solid var(--black-outline);
     background-color: var(--yellow-light);
     margin-left: 15px;
     border-radius: 50%;
+    display: flex
+;
+    /* justify-content: center; */
+    align-items: center;
 }
 
 .right-bottom-btn{
@@ -551,13 +578,8 @@ Variables
     border-radius: 5px;
 }
 
-
-.display-info{
-    display: flex;
-    width:100%;
-    justify-content: space-evenly;
-}
-
 .icon-image{
-    width: 50px;
+    width: 70px;
+    height:20px;
+    margin-right: 5px;
 }
