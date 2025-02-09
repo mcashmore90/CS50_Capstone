@@ -1,7 +1,6 @@
 {% extends 'pokedex/layout.html' %} {% block body %}
 <div id="pokedex"></div>
 
-<div id="scroll"></div>
 
 <script type="text/babel">
   function Pokedex() {
@@ -10,7 +9,7 @@
     const [pokemonList, setPokemonList] = React.useState([]);
     const [selectedPokemon, setSelectedPokemon] = React.useState({});
     const [isViewDetail, setIsViewDetail] = React.useState(false)
-    const [selectedTab, setSelectedTab] = React.useState("info");
+    const [selectedTab, setSelectedTab] = React.useState("");
     const [isMoveDetail, setIsMoveDetail] = React.useState(false);
 
     useEffect(() => {
@@ -18,7 +17,6 @@
         .then((response) => response.json())
         .then((result) => {
           setPokemonList(result.pokemon);
-          console.log(selectedPokemon)
         })
         .catch((error) => console.error("Error fetching data:", error));
     }, []);
@@ -57,10 +55,11 @@
             .then((result) => {
               setSelectedPokemon(result.pokemon);
             });
+            selectTab('info');
         }
         else{
           setSelectedPokemon({});
-          selectTab('info');
+          selectTab('');
         }
         return !prevState;
       });
@@ -89,7 +88,7 @@
           isViewDetail={isViewDetail}
         />
 
-        <RightPanelDisplay selectedPokemon={selectedPokemon} selectedTab={selectedTab} selectTab={selectTab} isMoveDetail={isMoveDetail}/>
+        <RightPanelDisplay selectedPokemon={selectedPokemon} selectedTab={selectedTab} selectTab={selectTab} isMoveDetail={isMoveDetail} isViewDetail={isViewDetail}/>
       </div>
     );
   }
@@ -120,6 +119,7 @@
         </div>
         <div class="left-panel-layout">
           <div class="left-layout">
+            <div class="display-shadow">
             <div class="display">
               <div class="display-top">
                 <div class="red-dot"></div>
@@ -141,7 +141,7 @@
                 </div>
               </div>
             </div>
-
+            </div>
             <Controls
               selectNext={selectNext}
               selectPrevious={selectPrevious}
@@ -196,7 +196,7 @@
         </div>
         <div className="dpad-control">
           <div></div>
-          <div className="dpad-up hoverable" onClick={!isViewDetail ? selectPrevious : null} >
+          <div className={`dpad-up ${!isViewDetail?"hoverable":""}`} onClick={!isViewDetail ? selectPrevious : null} >
             <div className="dpad-arrow-outline-up">
               <div className="dpad-arrow-up"></div>
             </div>
@@ -216,7 +216,7 @@
             </div>
           </div>
           <div></div>
-          <div className="dpad-down hoverable" onClick={!isViewDetail ? selectNext: null}>
+          <div className={`dpad-down ${!isViewDetail?"hoverable":""}`} onClick={!isViewDetail ? selectNext: null}>
             <div className="dpad-arrow-outline-down">
               <div className="dpad-arrow-down"></div>
             </div>
@@ -227,7 +227,7 @@
     );
   };
 
-  const RightPanelDisplay = ({selectedPokemon,selectedTab,selectTab,isMoveDetail}) =>{
+  const RightPanelDisplay = ({selectedPokemon,selectedTab,selectTab,isMoveDetail,isViewDetail}) =>{
     const { useState,useEffect } = React;
     const [moveIndex, setMoveIndex] = useState(0);
     const [isMoreInfo, setIsMoreInfo] = useState(false)
@@ -267,7 +267,7 @@
         <div className="right-panel-body">
           <div className="right-layout">
             <DetailScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon} moveIndex={moveIndex} isMoreInfo={isMoreInfo}/>
-            <DetailControls selectTab={selectTab} />
+            <DetailControls selectTab={selectTab} selectedTab={selectedTab} isViewDetail={isViewDetail}/>
             <div className="right-top-btn">
               <div className="top-red-lights">
                 <div className="top-red-light"></div>
@@ -366,20 +366,20 @@
     )
   }
 
-  function DetailControls({ selectTab }) {
+  function DetailControls({ selectTab, selectedTab,isViewDetail }) {
     return (
       <div className="blue-btn-layout">
-        <div className="blue-button-info hoverable" onClick={() => selectTab("info")}>
-          INFO
+        <div className={`${selectedTab==="info"? "selected-blue-btn":""} blue-button-info ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("info")}>
+          {isViewDetail?"INFO":""}
         </div>
-        <div className="blue-button-desc hoverable" onClick={() => selectTab("desc")}>
-          DESC.
+        <div className={`${selectedTab==="desc"? "selected-blue-btn":""} blue-button-desc ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("desc")}>
+          {isViewDetail?"DESC.":""} 
         </div>
-        <div className="blue-button-stats hoverable" onClick={() => selectTab("stats")}>
-          STATS
+        <div className={`${selectedTab==="stats"? "selected-blue-btn":""} blue-button-stats ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("stats")}>
+          {isViewDetail?"STATS":""}
         </div>
-        <div className="blue-button-moves hoverable" onClick={() => selectTab("moves")}>
-          MOVES
+        <div className={`${selectedTab==="moves"? "selected-blue-btn":""} blue-button-moves ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("moves")}>
+          {isViewDetail?"MOVES":""}
         </div>
         <div className="blue-button"></div>
         <div className="blue-button"></div>
@@ -398,7 +398,7 @@
           <div className={`white-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?selectPreviousMove:null}>{isMoveDetail?"PREV.":""}</div>
           <div className={`white-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?selectNextMove:null}>{isMoveDetail?"NEXT":""}</div>
         </div>
-        <div className={`yellow-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?showMore:null}>{isMoveDetail?"MORE INFO":""}</div>
+        <div className={`yellow-btn ${isMoveDetail?"hoverable":""}`} onClick={isMoveDetail?showMore:null}>{isMoveDetail?"MORE":""}</div>
       </div>
     )
   }

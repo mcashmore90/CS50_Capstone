@@ -23,21 +23,21 @@ Variables
     --green-btn:#4dae45;
     --red-btn:#e72f2f;
     --blue-btn:#0190d0;
+    --selected-blue-btn:#0271a5;
 
     --light-frame:#dedede;
     --blue-light:#71b3e3;
-    --blue-light-hl:#c5e1f7;
     --red-light:#8f1a1a;
-    --red-light-hl: #efabaa;
     --yellow-light:#f5df27;
-    --yell-light-hl:#f6eea4;
     --green-light:#61b344;
-    --green-light-hl:#acd3ac;
     
     --outline-size: 3px;
     --max-right-panel-width:520px;
 }
 
+/*========================
+Function classes
+==========================*/
 .hide{
     display: none !important;
 }
@@ -51,6 +51,13 @@ Variables
     cursor: pointer;
 }
 
+.selected-blue-btn{
+    background-color: var(--selected-blue-btn) !important;
+}
+
+/*========================
+Base Layout
+==========================*/
 .pokedex{
     margin:0 auto;
     display:flex;
@@ -59,6 +66,9 @@ Variables
     height: 850px
 }
 
+/*========================
+Left Panel Layout Classes
+==========================*/
 .left-panel{
     max-width: 600px;
     min-width: 320px;
@@ -68,6 +78,10 @@ Variables
     height:700px
 }
 
+
+/*========================
+Top Section of Left Panel
+==========================*/
 .top-shadow{
     height: 140px;
     width: 100%;
@@ -138,6 +152,9 @@ Variables
     border-radius: 50%;
 }
 
+/*========================
+Hinge Section of Left Panel
+==========================*/
 .side-hinge{
     height: 648px;
     width: 80px;
@@ -162,6 +179,9 @@ Variables
     border-bottom: var(--outline-size) solid var(--black-outline);
 }
 
+/*========================
+Mainly Display Section of Left Panel
+==========================*/
 .left-panel-layout{
     display: flex;
     position: relative;
@@ -173,13 +193,25 @@ Variables
     width: 100%;
 }
 
+.display-shadow{
+    width: 376px;
+    height: 319px;
+    border-radius: 4%;
+    background-color: var(--black-outline);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%);
+    margin: 0 auto;
+}
+
 .display{
     width: 370px;
     border-radius: 5%;
     background-color: var(--screen-frame);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%); 
-    margin: 0 auto;
-    margin-top:85px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%);
+    border-top: 6px solid var(--black-outline);
+    margin-top: 85px;
+    position: relative;
+    left: var(--outline-size);
+    bottom: var(--outline-size);
 }
 
 .display-top{
@@ -249,7 +281,9 @@ Variables
     text-align: center;
 } 
 
-
+/*========================
+Controls of Left Panel
+==========================*/
 .controls{
     width: 400px;
     height: 120px;
@@ -301,6 +335,9 @@ Variables
     margin-top: 40px;
 }
 
+/*========================
+Dpad Controls Layout
+==========================*/
 .dpad-control{
     width:100px;
     height:100px;
@@ -384,12 +421,18 @@ Variables
     rotate: 180deg;
 }
 
+/*========================
+Right Panel Layout
+==========================*/
 .right-panel{
     max-width: 520px;
     min-width: 320px;
     width:100%; 
 }
 
+/*========================
+Top Section of Right Panel
+==========================*/
 .top-outline{
     height: 140px;
     width: 520px;
@@ -406,7 +449,6 @@ Variables
     background-color: var(--red-bg);
     position: relative;
     top:var(--outline-size);
-    /* right:var(--outline-size); */
     clip-path: polygon(100% 60%, 60% 60%, 40% 0, 0 0 , 0 100%, 100% 100%);
 }
 
@@ -420,11 +462,17 @@ Variables
     top: 56px;
 }
 
+/*========================
+Main Layout of Right Panel
+==========================*/
 .right-layout{
     width:400px;
     margin:0 auto;
 }
 
+/*========================
+Main Display Section of Right Panel
+==========================*/
 .detail-screen{
     width:100%;
     height: 120px;
@@ -460,13 +508,10 @@ Variables
     grid-template-rows: 1fr 1fr 1fr;
 }
 
-/* .move-list-display{
-    width: 300px;
-    display: flex;
-    justify-content: space-between;
-    margin:0 auto;
-} */
 
+/*========================
+Blue Buttons Control Section
+==========================*/
 .blue-btn-layout{
     width: 100%;
     height:100px;
@@ -486,7 +531,9 @@ Variables
     justify-content: center;
 }
 
-
+/*========================
+Right Panel Buttons Top Section
+==========================*/
 .right-top-btn{
     margin-top: 20px;
     width: 100%;
@@ -523,6 +570,9 @@ Variables
     border-radius: 5px;
 }
 
+/*========================
+Right Panel Buttons Middle Section
+==========================*/
 .right-middle-btn{
     width: 100%;
     margin-top: 20px;
@@ -550,16 +600,14 @@ Variables
 
 .yellow-btn{
     font-size: 18px;
-    text-align: center;
+    justify-content: center;
     width: 80px;
     height: 80px;
     border: var(--outline-size) solid var(--black-outline);
     background-color: var(--yellow-light);
     margin-left: 15px;
     border-radius: 50%;
-    display: flex
-;
-    /* justify-content: center; */
+    display: flex;
     align-items: center;
 }
 
@@ -569,6 +617,9 @@ Variables
     justify-content: space-between;
 }
 
+/*========================
+Right Panel Buttons Bottom Section
+==========================*/
 .bottom-btn{
     height:40px;
     width: 175px;
@@ -583,3 +634,8 @@ Variables
     height:20px;
     margin-right: 5px;
 }
+
+
+@media (min-width: 500px) {
+    /* Your CSS rules here */
+  }
