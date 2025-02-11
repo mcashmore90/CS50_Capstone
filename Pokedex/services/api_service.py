@@ -1,54 +1,60 @@
 import requests
-from ..data.dtos import PokemonDto, TypeDto, StatDto, MoveDto, PokemonListDto
+from ..models import Type, Stat, Move, Pokemon
 from decimal import Decimal
+from datetime import datetime
+import asyncio
 
-class ApiService:
-    api_url = "https://pokeapi.co/api/v2/"
+class ApiService:  
     
-    def GetPokemon(limit, offset):
-        request = requests.get(f"{ApiService.api_url}pokemon?limit={limit}&offset={offset}")
-        if request.status_code == 200:
-            response = request.json()
-            pokemonList = []
-            for result in response["results"]:
-                pokemonList.append(PokemonListDto(
-                    name = result["name"].replace('-', ' ').upper()
-                ))
-            return pokemonList
-        
-        
-    def GetPokemonByName(name):
-        request = requests.get(f"{ApiService.api_url}pokemon/{name}")
+    def SeedData():
+        start = datetime.now()
+        pokemonCount = Pokemon.objects.count()
+        if pokemonCount < 151:
+            request = requests.get("https://pokeapi.co/api/v2/pokemon?limit=151")
+            if request.status_code == 200:
+                response = request.json()
+                for result in response["results"]:
+                    isPokemon = Pokemon.objects.filter(name=result["name"].replace('-', ' ').upper()).exists()
+                    if isPokemon == False:
+                       
+                        ApiService.GetPokemons(result["url"])
+                        print(f"adding...{result} complete")
+                    
+        end = datetime.now()
+        print(f"Seed complete in....{end-start}")
+            
+    
+    def GetPokemons(url):
+        request = requests.get(url)
         if request.status_code == 200:
             response = request.json()
             
-            stats = ApiService.GetStats(response["stats"])
-            moves_list = ApiService.GetMoves(response["moves"])
-            types_list = []
-            for type in response["types"]:
-                types_list.append(ApiService.GetType(type["type"]["url"]))
             description = ApiService.GetDescription(response["species"]["url"])
-
-            pokemon= PokemonDto(
-                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
+            moves = ApiService.GetMoves(response["moves"])
+            stats = ApiService.GetStats(response["stats"])
+            types=[]
+            for type in response["types"]:
+                newType = ApiService.GetType(type["type"])
+                print(f"adding ntype: {newType}")
+                types.append(newType)
+                
+            
+            pokemon = Pokemon(
+                pokemonId = response["id"],
                 name = response["name"].replace('-', ' ').upper(),
-                number = response["id"],
-                height= str((Decimal(response["height"]) * Decimal(0.1)).quantize(Decimal('0.01'))),
-                weight= str((Decimal(response["weight"]) * Decimal(0.1)).quantize(Decimal('0.01'))),
+                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
+                height= Decimal(response["height"]) * Decimal(0.1),
+                weight= Decimal(response["weight"]) * Decimal(0.1),
                 description = description,
-                stat = stats,
-                moves=moves_list,
-                types = types_list
+                stat = stats
             )
-            
-            return pokemon
-            
-        else: 
-            return None
-
+            pokemon.save()
+            pokemon.moves.add(*moves)
+            pokemon.types.add(*types)
+  
     def GetStats(stats):
-        currentStats = StatDto()
-   
+        print(f"Adding Stats")
+        currentStats = Stat()
         for stat in stats:
             if stat['stat']['name'] == "hp":
                 currentStats.health = stat["base_stat"]
@@ -62,34 +68,56 @@ class ApiService:
                 currentStats.sp_defence = stat["base_stat"]                    
             if stat['stat']['name'] == "speed":
                 currentStats.speed = stat["base_stat"]                
+        currentStats.save()
         return currentStats
     
     def GetMoves(moves):
-        move_urls = [move['move']['url'] for move in moves 
+        print(f"Adding moves")
+        move_urls = [move['move'] for move in moves 
                           if any( version_group['version_group']['name'] 
                         in [ 'red-blue','yellow']and version_group['level_learned_at'] == 1 for version_group in move['version_group_details'] )]        
         moves = []
         for url in move_urls:
-            request = requests.get(url)
-            if request.status_code == 200:
+            print(url["name"].replace('-', ' ').upper())
+            searchMove = Move.objects.filter(name=url["name"].replace('-', ' ').upper()).first()
+            if searchMove == None:
+                request = requests.get(url["url"])
                 data = request.json()
-                moves.append(MoveDto(
+                type = ApiService.GetType(data["type"])
+                print(type)
+                newMove = Move(
+                    moveId = data["id"],
                     name = data["name"].replace('-', ' ').upper(),
                     power = data["power"],
                     description = data["effect_entries"][0]["short_effect"].replace('\n', ' ').replace('\f', ' ').upper(),
                     accuracy = data["accuracy"],
                     pp = data["pp"],
-                    type= ApiService.GetType(data["type"]["url"])
-                ))
+                    type=type
+                )
+                newMove.save()
+                print(f"adding new move: {newMove}")
+                moves.append(newMove)
             else:
-                return None
+                moves.append(searchMove)
+        print(f"Adding moves complete.......")
         return moves
     
-    def GetType(url):
-        request = requests.get(url)
-        if request.status_code == 200:
-            response = request.json()
-            return TypeDto(name=response["name"], image = response["sprites"]["generation-ix"]["scarlet-violet"]["name_icon"])
+    
+    def GetType(type):
+        searchType = Type.objects.filter(name=type["name"].upper()).first()
+        if searchType == None:
+            print(f"Adding new....{type}")
+            request = requests.get(type["url"])
+            result = request.json()
+            newType = Type(
+                typeId=result["id"],
+                name=result["name"].upper(),
+                image = result["sprites"]["generation-ix"]["scarlet-violet"]["name_icon"]
+            ).save()
+            return newType
+        else:
+            return searchType
+        
         
     def GetDescription(url):
         print(url)
@@ -100,4 +128,8 @@ class ApiService:
             return desc
             
         else:
-            return None
+            return ""
+        
+        
+    def GetPokemon(limit, offset):
+        return None

@@ -11,12 +11,22 @@
     const [isViewDetail, setIsViewDetail] = React.useState(false)
     const [selectedTab, setSelectedTab] = React.useState("");
     const [isMoveDetail, setIsMoveDetail] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [paging, setPaging] = React.useState({});
 
     useEffect(() => {
       fetch("/pokemon")
         .then((response) => response.json())
         .then((result) => {
-          setPokemonList(result.pokemon);
+          console.log(result)
+          setPokemonList(result.data.pokemon);
+          setPaging({
+            hasNext: result.data.hasNext,
+            hasPrevious: result.data.hasPrevious,
+            nextPageNumber: result.data.nextPageNumber,
+            previousPageNumber: result.data.previousPageNumber
+          })
+          setIsLoading(false);
         })
         .catch((error) => console.error("Error fetching data:", error));
     }, []);
@@ -25,12 +35,21 @@
       if (currentIndex < pokemonList.length - 1) {
         setIndex(currentIndex + 1);
       } else {
-        fetch("/pokemon-next")
+        if(paging.hasNext)
+        {
+        fetch(`/pokemon?page=${paging.nextPageNumber}`)
           .then((response) => response.json())
           .then((result) => {
-            setIndex(result.index);
-            setPokemonList(result.pokemon);
-          });
+            console.log(result)
+            setPaging({
+              hasNext: result.data.hasNext,
+              hasPrevious: result.data.hasPrevious,
+              nextPageNumber: result.data.nextPageNumber,
+              previousPageNumber: result.data.previousPageNumber
+            })
+            setIndex(0)
+            setPokemonList(result.data.pokemon);
+          });}
       }
     };
 
@@ -38,22 +57,31 @@
       if (currentIndex > 0) {
         setIndex(currentIndex - 1);
       } else {
-        fetch("/pokemon-previous")
+        if(paging.hasPrevious){
+        fetch(`/pokemon?page=${paging.previousPageNumber}`)
           .then((response) => response.json())
           .then((result) => {
-            setIndex(result.index);
-            setPokemonList(result.pokemon);
-          });
+            setIndex(result.data.pokemon.length-1);
+            setPokemonList(result.data.pokemon);
+            setPaging({
+              hasNext: result.data.hasNext,
+              hasPrevious: result.data.hasPrevious,
+              nextPageNumber: result.data.nextPageNumber,
+              previousPageNumber: result.data.previousPageNumber
+            })
+          });}
       }
     };
 
     const selectItem = () => {
       setIsViewDetail((prevState) => {
         if (!prevState) { 
-          fetch(`pokemon/${pokemonList[currentIndex].name}`)
+          fetch(`pokemon/${pokemonList[currentIndex].pokemonId}`)
             .then((response) => response.json())
             .then((result) => {
+              console.log(result)
               setSelectedPokemon(result.pokemon);
+              console.log(selectedPokemon)
             });
             selectTab('info');
         }
@@ -75,6 +103,10 @@
         setIsMoveDetail(false)
       }
     };
+
+    if (isLoading) {
+      return <div>Loading Data...</div>;
+    }
 
     return (
       <div className="pokedex">
@@ -169,7 +201,7 @@
           <ul className="list">
             {data.map((item, index) => (
               <li className={index === currentIndex ? "select-item" : ""} key={item.id}>
-                {item.name}
+                {item.pokemonName}
               </li>
             ))}
           </ul>

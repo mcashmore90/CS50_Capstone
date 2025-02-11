@@ -27,16 +27,6 @@ class StatDto:
         
     def __repr__(self):
         return self.__str__()
-    
-    def to_dic(self):
-        return{
-            "health":self.health,
-            "attack":self.attack,
-            "defence":self.defence,
-            "sp_attack":self.sp_attack,
-            "sp_defence":self.sp_defence,
-            "speed":self.speed
-        }
         
 class MoveDto:
     def __init__(self, name, description, accuracy, power, pp, type):
@@ -52,16 +42,6 @@ class MoveDto:
 
     def __repr__(self):
         return self.__str__()
-    
-    def to_dic(self):
-        return{
-            "name":self.name,
-            "description":self.description,
-            "accuracy":self.accuracy,
-            "power":self.power,
-            "pp":self.pp,
-            "type":self.type.to_dic()
-        }
 
 class PokemonDto:
     def __init__(self, image, name, number, height, weight, description, stat, moves, types ):
@@ -80,19 +60,6 @@ class PokemonDto:
 
     def __repr__(self):
         return self.__str__()
-    
-    def to_dic(self):
-        return{
-            "image":self.image,
-            "name":self.name,
-            "number":self.number,
-            "desc": self.description,
-            "stat":self.stat.to_dic(),
-            "height":self.height,
-            "weight":self.weight,
-            "moves": [move.to_dic() for move in self.moves],
-            "types": [type.to_dic() for type in self.types]
-        }
     
 class PokemonListDto:
     def __init__(self, name):
