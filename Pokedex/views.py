@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from django.http import HttpResponseRedirect,JsonResponse
-from .models import Type, Stat, Move, Pokemon, PokemonSerializer
+from .models import Type, Stat, Move, Pokemon
 from .services.api_service import ApiService
 import json
 from django.core.paginator import Paginator
@@ -11,7 +11,7 @@ limit = 6
 maxPokemonCount = 151
 
 def index(request):
-    ApiService.SeedData()
+    #ApiService.SeedData()
     
     # pokemon = Pokemon.objects.get(name="MEWTWO")
     
@@ -22,6 +22,7 @@ def index(request):
     return render(request, "pokedex/index.html")
 
 def pokemon(request):
+    ApiService.SeedData()
     #pokemonData = ApiService.GetPokemon(limit, offset)
     #note - list splicing [start:end]
     # Retrieve Pokemon along with their related moves and types

@@ -8,7 +8,7 @@ class Type(models.Model):
     image = models.CharField(max_length=255)
     
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} - {self.image}"
     
     def to_dic(self):
         return{
@@ -23,6 +23,9 @@ class Stat(models.Model):
     sp_attack = models.IntegerField()
     sp_defence = models.IntegerField()
     speed = models.IntegerField()
+    pokemon = models.OneToOneField('Pokemon', on_delete=models.CASCADE)
+    def __str__(self):
+        return f"Health: {self.health}, Attack: {self.attack}, Defence: {self.defence}, sp_atk: {self.sp_attack}, sp_def: {self.sp_defence}, Speed: {self.speed}"
     
     def to_dic(self):
         return{
@@ -62,9 +65,8 @@ class Pokemon(models.Model):
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
-    weight = models.FloatField(default=0.0)
-    height = models.FloatField(default=0.0)
-    stat = models.ForeignKey(Stat, on_delete=models.CASCADE, blank=True, null=True)
+    weight = models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
+    height = models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
     moves = models.ManyToManyField(Move, blank=True, null=True)
     types = models.ManyToManyField(Type, blank=True, null=True)
 
@@ -83,29 +85,3 @@ class Pokemon(models.Model):
             "moves": [move.to_dic() for move in self.moves],
             "types": [type.to_dic() for type in self.types]
         }
-    
-class TypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Type
-        fields = ['typeId', 'name', 'image']
-
-class StatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Stat
-        fields = ['health', 'attack', 'defence', 'sp_attack', 'sp_defence', 'speed']
-
-class MoveSerializer(serializers.ModelSerializer):
-    type = TypeSerializer(read_only=True)
-    
-    class Meta:
-        model = Move
-        fields = ['moveId', 'name', 'description', 'accuracy', 'power', 'pp', 'type']
-
-class PokemonSerializer(serializers.ModelSerializer):
-    stat = StatSerializer(read_only=True)
-    moves = MoveSerializer(many=True, read_only=True)
-    types = TypeSerializer(many=True, read_only=True)
-    
-    class Meta:
-        model = Pokemon
-        fields = ['pokemonId', 'name', 'image', 'description', 'weight', 'height', 'stat', 'moves', 'types']

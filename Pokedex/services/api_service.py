@@ -8,128 +8,153 @@ class ApiService:
     
     def SeedData():
         start = datetime.now()
-        pokemonCount = Pokemon.objects.count()
-        if pokemonCount < 151:
-            request = requests.get("https://pokeapi.co/api/v2/pokemon?limit=151")
-            if request.status_code == 200:
-                response = request.json()
-                for result in response["results"]:
-                    isPokemon = Pokemon.objects.filter(name=result["name"].replace('-', ' ').upper()).exists()
-                    if isPokemon == False:
-                       
-                        ApiService.GetPokemons(result["url"])
-                        print(f"adding...{result} complete")
-                    
+        request = requests.get("https://pokeapi.co/api/v2/pokemon?limit=1")
+        response = request.json()
+        for pokemon in response["results"]:
+            ApiService.CreatePokemon(pokemon)
+
         end = datetime.now()
         print(f"Seed complete in....{end-start}")
-            
-    
-    def GetPokemons(url):
-        request = requests.get(url)
-        if request.status_code == 200:
-            response = request.json()
-            
-            description = ApiService.GetDescription(response["species"]["url"])
-            moves = ApiService.GetMoves(response["moves"])
-            stats = ApiService.GetStats(response["stats"])
-            types=[]
-            for type in response["types"]:
-                newType = ApiService.GetType(type["type"])
-                print(f"adding ntype: {newType}")
-                types.append(newType)
-                
-            
-            pokemon = Pokemon(
-                pokemonId = response["id"],
-                name = response["name"].replace('-', ' ').upper(),
-                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
-                height= Decimal(response["height"]) * Decimal(0.1),
-                weight= Decimal(response["weight"]) * Decimal(0.1),
-                description = description,
-                stat = stats
-            )
-            pokemon.save()
-            pokemon.moves.add(*moves)
-            pokemon.types.add(*types)
   
-    def GetStats(stats):
-        print(f"Adding Stats")
-        currentStats = Stat()
-        for stat in stats:
-            if stat['stat']['name'] == "hp":
-                currentStats.health = stat["base_stat"]
-            if stat['stat']['name'] == "attack":
-                currentStats.attack = stat["base_stat"]                 
-            if stat['stat']['name'] == "defense":
-                currentStats.defence = stat["base_stat"]               
-            if stat['stat']['name'] == "special-attack":
-                currentStats.sp_attack = stat["base_stat"]                 
-            if stat['stat']['name'] == "special-defense":
-                currentStats.sp_defence = stat["base_stat"]                    
-            if stat['stat']['name'] == "speed":
-                currentStats.speed = stat["base_stat"]                
-        currentStats.save()
-        return currentStats
+  
+    def CreatePokemon(url):     
+        pokemonSearch = Pokemon.objects.filter(name=url["name"].replace('-', ' ')).first()
+        
+        
+        print(f'creating new pokemon: {url["name"]}')
+        request = requests.get(url["url"])
+        response = request.json()
+            
+        moves = ApiService.GetMoves(response["moves"])           
+        description = ApiService.GetDescription(response["species"])
+        print(f'printing descript {description}')
+
+        types = []
+        for type in response["types"]:
+            print(type["type"])
+            types.append(ApiService.GetType(type["type"]))
+            
+        if pokemonSearch is None:    
+            newPokemon = Pokemon(
+                pokemonId = response["id"],
+                name = response["name"].replace('-', ' '),
+                image = response["sprites"]["versions"]["generation-i"]["yellow"]["front_default"],
+                height= round(Decimal(response["height"]) * Decimal(0.1),2),
+                weight= round(Decimal(response["weight"]) * Decimal(0.1),2),
+                description = description,
+            )
+            newPokemon.save()
+            newPokemon.moves.add(*moves)
+            newPokemon.types.add(*types)
+            
+            ApiService.GetStats(response["stats"], newPokemon)
+            
+            print(f'New pokemon created: {newPokemon}')
+        else:
+            missing_moves = set(moves) - set(pokemonSearch.moves.all())
+            missing_types = set(types) - set(pokemonSearch.types.all())
+
+            if missing_moves:
+                pokemonSearch.moves.set(missing_moves)
+                pokemonSearch.save()
+                print(f'added moves {list(pokemonSearch.moves.all())} to {pokemonSearch}')
+                
+            if missing_types:
+                pokemonSearch.types.set(missing_types)
+                pokemonSearch.save()
+                print(f'added types {list(pokemonSearch.types.all())} to {pokemonSearch}')
+            print(f'returning {pokemonSearch}')
+            
+  
+    def GetStats(stats, newPokemon):
+        searchStats = Stat.objects.filter(pokemon = newPokemon).first()
+        if searchStats is None:
+            print(f"Adding Stats")
+            newStat = Stat(
+            health=stats[0]["base_stat"],
+            attack=stats[1]["base_stat"],
+            defence=stats[2]["base_stat"],
+            sp_attack=stats[3]["base_stat"],
+            sp_defence=stats[4]["base_stat"],
+            speed=stats[5]["base_stat"],
+            pokemon=newPokemon
+        )
+            newStat.save()
+        
+        print("Stats applied")
+        
     
     def GetMoves(moves):
-        print(f"Adding moves")
+        print(f"Organizing moves")
         move_urls = [move['move'] for move in moves 
                           if any( version_group['version_group']['name'] 
                         in [ 'red-blue','yellow']and version_group['level_learned_at'] == 1 for version_group in move['version_group_details'] )]        
-        moves = []
-        for url in move_urls:
-            print(url["name"].replace('-', ' ').upper())
-            searchMove = Move.objects.filter(name=url["name"].replace('-', ' ').upper()).first()
-            if searchMove == None:
-                request = requests.get(url["url"])
-                data = request.json()
-                type = ApiService.GetType(data["type"])
-                print(type)
-                newMove = Move(
-                    moveId = data["id"],
-                    name = data["name"].replace('-', ' ').upper(),
-                    power = data["power"],
-                    description = data["effect_entries"][0]["short_effect"].replace('\n', ' ').replace('\f', ' ').upper(),
-                    accuracy = data["accuracy"],
-                    pp = data["pp"],
-                    type=type
-                )
-                newMove.save()
-                print(f"adding new move: {newMove}")
-                moves.append(newMove)
-            else:
-                moves.append(searchMove)
-        print(f"Adding moves complete.......")
-        return moves
-    
-    
-    def GetType(type):
-        searchType = Type.objects.filter(name=type["name"].upper()).first()
-        if searchType == None:
-            print(f"Adding new....{type}")
-            request = requests.get(type["url"])
-            result = request.json()
-            newType = Type(
-                typeId=result["id"],
-                name=result["name"].upper(),
-                image = result["sprites"]["generation-ix"]["scarlet-violet"]["name_icon"]
-            ).save()
-            return newType
-        else:
-            return searchType
+       
+        print(f'Moves organized...')
+        moveDetails=[]
+        for move in move_urls:
+            moveDetails.append(ApiService.GetMoveDetail(move))
+        return moveDetails
         
-        
+    
     def GetDescription(url):
-        print(url)
-        request = requests.get(url)
+        print("getting description")
+        request = requests.get(url["url"])
         if request.status_code == 200:
             data = request.json()
-            desc = next((entry['flavor_text'] for entry in data["flavor_text_entries"] if entry['version']['name'] == 'yellow'), "").replace('\n', ' ').replace('\f', ' ').upper()
-            return desc
-            
+            for entry in data['flavor_text_entries']:
+                if entry['version']['name'] == "yellow" and entry['language']['name'] == "en":
+                    return entry['flavor_text'].replace('\n', ' ').replace('\f', ' ')
         else:
             return ""
         
-        
-    def GetPokemon(limit, offset):
-        return None
+
+    def GetType(type):  
+        print(f'getting tpye: {type["name"]}') 
+        searchType = Type.objects.filter(name=type["name"]).first()
+        if searchType is None:
+            print(f'Adding new type: {type["name"]}')
+            request = requests.get(type["url"])
+            result = request.json()
+            
+            newType = Type(
+                typeId=result["id"],
+                name = result["name"],
+                image = result["sprites"]["generation-ix"]["scarlet-violet"]["name_icon"]
+            )
+            newType.save()
+            print(f"added new type: {newType}")
+            return newType         
+        else:
+            print(f"returning type: {searchType}")
+            return searchType   
+    
+    def GetMoveDetail(move):
+        searchMove = Move.objects.filter(name = move["name"]).first()
+        if searchMove is None:
+            print(f'Adding new Move: {move["name"]}')
+            request = requests.get(move["url"])
+            response = request.json()
+            
+            moveType = ApiService.GetType(response["type"])
+            
+            newMove = Move(
+                moveId = response["id"],
+                name = response["name"],
+                description = response["effect_entries"][0]["short_effect"].replace('\n', ' ').replace('\f', ' '),
+                accuracy = response["accuracy"],
+                power = response["power"],
+                pp = response["pp"],
+                type = moveType
+            )
+            newMove.save()
+            print(f'New move added: {newMove}')
+            return newMove
+        else:
+            if searchMove.type is None:
+                searchMove.type = ApiService.GetType(response["type"])
+                searchMove.save()
+                print(f'added type to {searchMove}')
+            print(f'returning Move: {searchMove}')
+            return searchMove
+    
