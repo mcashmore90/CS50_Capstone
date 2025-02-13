@@ -8,7 +8,7 @@ class ApiService:
     
     def SeedData():
         start = datetime.now()
-        request = requests.get("https://pokeapi.co/api/v2/pokemon?limit=1")
+        request = requests.get("https://pokeapi.co/api/v2/pokemon?limit=151")
         response = request.json()
         for pokemon in response["results"]:
             ApiService.CreatePokemon(pokemon)
@@ -19,7 +19,6 @@ class ApiService:
   
     def CreatePokemon(url):     
         pokemonSearch = Pokemon.objects.filter(name=url["name"].replace('-', ' ')).first()
-        
         
         print(f'creating new pokemon: {url["name"]}')
         request = requests.get(url["url"])

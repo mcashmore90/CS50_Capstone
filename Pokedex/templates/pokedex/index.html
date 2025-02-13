@@ -1,4 +1,8 @@
 {% extends 'pokedex/layout.html' %} {% block body %}
+<div class="navbar">
+<div class="nav-left-button" id="nav-left-button" onclick="showLeftPanel()"><<</div>
+<div class="nav-right-button" id="nav-right-button" onclick="showRightPanel()">>></div>
+</div>
 <div id="pokedex"></div>
 
 
@@ -18,7 +22,6 @@
       fetch("/pokemon")
         .then((response) => response.json())
         .then((result) => {
-          console.log(result)
           setPokemonList(result.data.pokemon);
           setPaging({
             hasNext: result.data.hasNext,
@@ -40,7 +43,6 @@
         fetch(`/pokemon?page=${paging.nextPageNumber}`)
           .then((response) => response.json())
           .then((result) => {
-            console.log(result)
             setPaging({
               hasNext: result.data.hasNext,
               hasPrevious: result.data.hasPrevious,
@@ -79,9 +81,7 @@
           fetch(`pokemon/${pokemonList[currentIndex].pokemonId}`)
             .then((response) => response.json())
             .then((result) => {
-              console.log(result)
               setSelectedPokemon(result.pokemon);
-              console.log(selectedPokemon)
             });
             selectTab('info');
         }
@@ -135,7 +135,7 @@
     isViewDetail,
   }) => {
     return (
-      <div class="left-panel">
+      <div class="left-panel" id="left-panel">
         <div class="top-shadow">
           <div class="top-bar">
             <div class="light-layout">
@@ -270,8 +270,6 @@
     },[selectedPokemon, selectedTab]);
 
     const selectNextMove=()=>{
-       console.log(selectedPokemon.moves)
-       console.log(moveIndex)
       if(moveIndex < selectedPokemon.moves.length-1)
       {
         setMoveIndex(moveIndex+1)
@@ -292,7 +290,7 @@
     }
 
     return (
-      <div className="right-panel">
+      <div className="right-panel" id="right-panel">
         <div className="top-outline">
           <div className="top-bg"></div>
         </div>
@@ -401,16 +399,16 @@
   function DetailControls({ selectTab, selectedTab,isViewDetail }) {
     return (
       <div className="blue-btn-layout">
-        <div className={`${selectedTab==="info"? "selected-blue-btn":""} blue-button-info ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("info")}>
+        <div className={`${selectedTab==="info"? "selected-blue-btn":""} blue-button-info ${isViewDetail?"hoverable":""}`} onClick={isViewDetail?() => selectTab("info"):null}>
           {isViewDetail?"INFO":""}
         </div>
-        <div className={`${selectedTab==="desc"? "selected-blue-btn":""} blue-button-desc ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("desc")}>
+        <div className={`${selectedTab==="desc"? "selected-blue-btn":""} blue-button-desc ${isViewDetail?"hoverable":""}`} onClick={isViewDetail?() => selectTab("desc"):null}>
           {isViewDetail?"DESC.":""} 
         </div>
-        <div className={`${selectedTab==="stats"? "selected-blue-btn":""} blue-button-stats ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("stats")}>
+        <div className={`${selectedTab==="stats"? "selected-blue-btn":""} blue-button-stats ${isViewDetail?"hoverable":""}`} onClick={isViewDetail?() => selectTab("stats"):null}>
           {isViewDetail?"STATS":""}
         </div>
-        <div className={`${selectedTab==="moves"? "selected-blue-btn":""} blue-button-moves ${isViewDetail?"hoverable":""}`} onClick={() => selectTab("moves")}>
+        <div className={`${selectedTab==="moves"? "selected-blue-btn":""} blue-button-moves ${isViewDetail?"hoverable":""}`} onClick={isViewDetail?() => selectTab("moves"):null}>
           {isViewDetail?"MOVES":""}
         </div>
         <div className="blue-button"></div>

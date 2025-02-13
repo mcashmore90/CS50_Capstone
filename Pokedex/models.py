@@ -77,11 +77,11 @@ class Pokemon(models.Model):
         return{
             "image":self.image,
             "name":self.name,
-            "number":self.number,
+            "number":self.pokemonId,
             "desc": self.description,
             "stat":self.stat.to_dic(),
             "height":self.height,
             "weight":self.weight,
-            "moves": [move.to_dic() for move in self.moves],
-            "types": [type.to_dic() for type in self.types]
+            "moves": [move.to_dic() for move in self.moves.all()],
+            "types": [type.to_dic() for type in self.types.all()]
         }

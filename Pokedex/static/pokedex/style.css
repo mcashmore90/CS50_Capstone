@@ -55,6 +55,48 @@ Function classes
     background-color: var(--selected-blue-btn) !important;
 }
 
+.icon-image{
+    width: 70px;
+    height:20px;
+    margin-right: 5px;
+}
+
+/*========================
+Top Navbar Layout
+==========================*/
+.navbar{
+    margin-bottom: 10px;
+    display:none
+}
+
+.nav-left-button, .nav-right-button{
+    height:30px;
+    width: 60px;
+    background-color: var(--black-btn);
+    border: var(--outline-size) solid var(--black-outline);
+    border-radius: 5px;
+    color: var(--black-btn-hl);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.nav-left-button{
+    margin-left:5px;
+    margin-right:auto;
+    display:none;
+}
+
+.nav-right-button{
+    margin-right:5px; 
+    margin-left: auto;
+}
+
+
+.nav-left-button, .nav-right-button:hover{
+    cursor: pointer;
+}
+
 /*========================
 Base Layout
 ==========================*/
@@ -235,8 +277,6 @@ Mainly Display Section of Left Panel
     width: 310px;
     height: 220px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: white;
     margin: 0 auto;
     box-sizing: border-box;
@@ -247,6 +287,7 @@ Mainly Display Section of Left Panel
 .pokemonImage{
     width:200px;
     height:200px;
+    margin:auto;
 }
 
 .display-bottom{
@@ -435,7 +476,7 @@ Top Section of Right Panel
 ==========================*/
 .top-outline{
     height: 140px;
-    width: 520px;
+    width: 100%;
     background-color: var(--black-outline);
     clip-path: polygon(100% 60%, 60% 60%, 40% 0, 0 0 , 0 100%, 100% 100%); 
     position: relative;
@@ -629,13 +670,22 @@ Right Panel Buttons Bottom Section
     border-radius: 5px;
 }
 
-.icon-image{
-    width: 70px;
-    height:20px;
-    margin-right: 5px;
+ @media (width <= 1000px) {
+    .side-hinge{
+        display:none;
+    }
+  } 
+
+@media(width<=860px){
+    .right-panel{
+        display:none;
+    }
+
+    .navbar{
+        display: flex;
+    }
+
+    .top-outline, .right-panel-body{
+        border-left: var(--outline-size) solid var(--black-outline)
+    }
 }
-
-
-@media (min-width: 500px) {
-    /* Your CSS rules here */
-  }
