@@ -47,7 +47,10 @@ class Move(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
-        return f"{self.name} type: {self.type}"
+        # if self.type is None:
+             return f"{self.name} {self.type.name}"
+        # else:
+         #   return f"{self.name}"
     
     def to_dic(self):
         return{

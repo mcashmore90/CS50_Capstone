@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from .models import Stat, Move, Pokemon
 from .services.api_service import ApiService
 from django.core.paginator import Paginator
+import asyncio
 
 limit = 6
 
@@ -11,6 +12,7 @@ def index(request):
 
 def pokemon(request):
     #ApiService.SeedData()
+    asyncio.run(ApiService.SeedData())
 
     pokemons = Pokemon.objects.all().order_by('pokemonId')
     pokemons = Paginator(pokemons, limit)
