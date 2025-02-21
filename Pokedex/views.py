@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Stat, Move, Pokemon
+from .models import Move, Pokemon
 from .services.api_service import ApiService
 from django.core.paginator import Paginator
 import asyncio
@@ -42,7 +42,6 @@ def pokemon(request):
 def pokemon_details(request, id):
     
     pokemon = Pokemon.objects.get(pokemonId = id)
-    stats = Stat.objects.get(pokemon = pokemon)
     moves = Move.objects.select_related('type').filter(pokemon = pokemon)
     for move in moves:
         print(move)

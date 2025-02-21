@@ -8,33 +8,12 @@ class Type(models.Model):
     image = models.CharField(max_length=255)
     
     def __str__(self):
-        return f"{self.name} - {self.image}"
+        return f"{self.name}"
     
     def to_dic(self):
         return{
             "name":self.name,
             "image":self.image
-        }
-
-class Stat(models.Model):
-    health = models.IntegerField()
-    attack = models.IntegerField()
-    defence = models.IntegerField()
-    sp_attack = models.IntegerField()
-    sp_defence = models.IntegerField()
-    speed = models.IntegerField()
-    pokemon = models.OneToOneField('Pokemon', on_delete=models.CASCADE)
-    def __str__(self):
-        return f"Health: {self.health}, Attack: {self.attack}, Defence: {self.defence}, sp_atk: {self.sp_attack}, sp_def: {self.sp_defence}, Speed: {self.speed}"
-    
-    def to_dic(self):
-        return{
-            "health":self.health,
-            "attack":self.attack,
-            "defence":self.defence,
-            "sp_attack":self.sp_attack,
-            "sp_defence":self.sp_defence,
-            "speed":self.speed
         }
 
 class Move(models.Model):
@@ -47,10 +26,10 @@ class Move(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
-        # if self.type is None:
+        #if self.type is None:
              return f"{self.name} {self.type.name}"
-        # else:
-         #   return f"{self.name}"
+        #else:
+           #return f"{self.name} "
     
     def to_dic(self):
         return{
@@ -67,24 +46,29 @@ class Pokemon(models.Model):
     pokemonId = models.IntegerField()
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.CharField( blank= True,max_length=255)
     weight = models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
     height = models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
+    
+    health = models.IntegerField(default=0)
+    attack = models.IntegerField(default=0)
+    defence = models.IntegerField(default=0)
+    sp_attack = models.IntegerField(default=0)
+    sp_defence = models.IntegerField(default=0)
+    speed = models.IntegerField(default=0)
+    
     moves = models.ManyToManyField(Move, blank=True, null=True)
     types = models.ManyToManyField(Type, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} - {self.pokemonId}"
     
-    def to_dic(self):
+    def stats(self):
         return{
-            "image":self.image,
-            "name":self.name,
-            "number":self.pokemonId,
-            "desc": self.description,
-            "stat":self.stat.to_dic(),
-            "height":self.height,
-            "weight":self.weight,
-            "moves": [move.to_dic() for move in self.moves.all()],
-            "types": [type.to_dic() for type in self.types.all()]
+            "health":self.health,
+            "attack":self.attack,
+            "defence":self.defence,
+            "sp_attack":self.sp_attack,
+            "sp_defence":self.sp_defence,
+            "speed":self.speed
         }
