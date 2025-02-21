@@ -72,3 +72,23 @@ class Pokemon(models.Model):
             "sp_defence":self.sp_defence,
             "speed":self.speed
         }
+
+    def to_dic(self):
+        return{
+            "image":self.image,
+            "name":self.name,
+            "number":self.pokemonId,
+            "desc": self.description,
+            "height":self.height,
+            "weight":self.weight,
+            
+            "health":self.health,
+            "attack":self.attack,
+            "defence":self.defence,
+            "sp_attack": self.sp_attack,
+            "sp_defence":self.sp_defence,
+            "speed":self.speed,           
+            
+            "moves": [move.to_dic() for move in self.moves.all()],
+            "types": [type.to_dic() for type in self.types.all()]
+        }

@@ -41,11 +41,6 @@ def pokemon(request):
 
 def pokemon_details(request, id):
     
-    pokemon = Pokemon.objects.get(pokemonId = id)
-    moves = Move.objects.select_related('type').filter(pokemon = pokemon)
-    for move in moves:
-        print(move)
-    
-    print(pokemon.moves.all())
+    pokemon = Pokemon.objects.prefetch_related('types','moves','moves__type').get(pokemonId = id)
 
     return JsonResponse({"pokemon":pokemon.to_dic()},safe=False)

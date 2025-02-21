@@ -81,6 +81,7 @@
           fetch(`pokemon/${pokemonList[currentIndex].pokemonId}`)
             .then((response) => response.json())
             .then((result) => {
+              console.log(result.pokemon)
               setSelectedPokemon(result.pokemon);
             });
             selectTab('info');
@@ -328,7 +329,7 @@
         <React.Fragment>
           <DetailInfoScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon}/>
           <DetailDescriptionScreen selectedTab={selectedTab} selectedPokemon={selectedPokemon}/>
-          <DetailStatsScreen selectedTab={selectedTab} stat={selectedPokemon.stat}/>
+          <DetailStatsScreen selectedTab={selectedTab} stat={selectedPokemon}/>
           <DetailMoveScreen selectedTab={selectedTab} moves={selectedPokemon.moves} moveIndex={moveIndex} isMoreInfo={isMoreInfo}/>
         </React.Fragment>
         )}
