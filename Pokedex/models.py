@@ -1,5 +1,4 @@
 from django.db import models
-from rest_framework import serializers
 
 # Create your models here.
 class Type(models.Model):
@@ -57,8 +56,8 @@ class Pokemon(models.Model):
     sp_defence = models.IntegerField(default=0)
     speed = models.IntegerField(default=0)
     
-    moves = models.ManyToManyField(Move, blank=True, null=True)
-    types = models.ManyToManyField(Type, blank=True, null=True)
+    moves = models.ManyToManyField(Move)
+    types = models.ManyToManyField(Type)
 
     def __str__(self):
         return f"{self.name} - {self.pokemonId}"

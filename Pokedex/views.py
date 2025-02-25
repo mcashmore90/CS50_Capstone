@@ -8,9 +8,12 @@ import asyncio
 limit = 6
 
 def index(request):    
-    return render(request, "pokedex/index.html")
+    #return render(request, "pokedex/index.html")
+    print("index")
+    return render(request, "index.html")
 
 def pokemon(request):
+    print("pokemon list requestsing")
     #ApiService.SeedData()
     asyncio.run(ApiService.SeedData())
 
