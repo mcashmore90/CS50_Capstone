@@ -4,35 +4,38 @@ Postman APIs to be used:
 https://www.postman.com/navigation-observer-99340780/pokemon-api/collection/miirbob/apis?action=share&creator=38650772
 
 
-This project will be completed in multiple phases:
+## Clone repository 
+git clone https://github.com/mcashmore90/CS50_Capstone.git
 
-Phase 1: Project Setup --COMPLETE--
-  Initial setup of the project and creation of the repository.
 
-Phase 2: API Service Setup --COMPLETE--
-  Create models to be used to return data from api call
-  Initial creation and testing of APIs and return data to the front end.
+## Project setup
+This can be done in two ways:
 
-Phase 3: UI Testing/Setup --COMPLETE--
-  Testing creating certain objects for the UI with CSS. Initial layout of UI.
+# 1
+# CD into the frontend project
+[file_path]/CS50_Capstone/frontend
 
-Phase 4: Interaction --COMPLETE--
-  Create scripts to interact with the UI with base data retrieval 
+# Run these NPM commands
+npm run build
+npm run makemigrations
+npm run migrate
+npm run runserver
 
-Phase 5: Data Retrieval  --COMPLETE--
-  Create full functional API to get all required data and display on the UI
+# Go to the generated localhost URL 
 
-Phase 5.A: Basic Layout --COMPLETE--
-  layout foundation for the webpage 
+# 2
+# CD into the front end project
+[file_path]/CS50_Capstone/frontend
 
-Phase 5.B: Detail layout --COMPLETE--
-  Complete layout of the various detail screens.
+# Run these NPM commands
+npm run build
 
-Phase 5.C Improve UI/UX layout and feedback
-  Improve button interaction and layout.
+# CD into the back end project
+[file_path]/CS50_Capstone/Pokedex
 
-Phase 5.D Improve performance/feedback
-  Currently it takes a bit to load the details. 
+# Run these Python commands
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
 
-Phase 6: Final Process
-  Complete all required UI and functionality for project.
+# Go to the generated localhost URL 

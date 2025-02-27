@@ -6,10 +6,10 @@ const DetailMoveScreen=({moves, selectedTab, moveIndex,isMoreInfo})=>{
         
         {(moves|| []).map((move, index) => (
           <React.Fragment>
-          <div className={`${index===moveIndex && isMoreInfo? "":"hide"}`}>{move.description}</div>
+          <div className={`${index===moveIndex && isMoreInfo? "":"hide"}`}>{move.description.toUpperCase()}</div>
           <div className={`display-stats ${index === moveIndex  && !isMoreInfo? "" : "hide"}`}>
             
-              <div>{move.name}</div>
+              <div>{move.name.toUpperCase()}</div>
               <img src={move.type.image} className="icon-image" alt={move.type.name} />
             <div>ACC: {move.accuracy}</div>      
             <div>PP: {move.pp}</div>

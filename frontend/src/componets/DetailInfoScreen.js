@@ -2,7 +2,7 @@ const DetailInfoScreen=({selectedPokemon, selectedTab})=>{
     return(
       <div className={selectedTab === "info" ? "" : "hide"}>
         <div className="detail-info-screen">
-          <div>{selectedPokemon.name} </div>
+          <div>{selectedPokemon.name.toUpperCase()} </div>
           <div># {selectedPokemon.number} </div>
           <div className="info-screen-types">
             {(selectedPokemon.types || []).map((type) => (

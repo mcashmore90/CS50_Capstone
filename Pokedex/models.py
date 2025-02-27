@@ -25,10 +25,7 @@ class Move(models.Model):
     type = models.ForeignKey(Type, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
-        #if self.type is None:
-             return f"{self.name} {self.type.name}"
-        #else:
-           #return f"{self.name} "
+        return f"{self.name} {self.type.name}"
     
     def to_dic(self):
         return{
@@ -62,16 +59,6 @@ class Pokemon(models.Model):
     def __str__(self):
         return f"{self.name} - {self.pokemonId}"
     
-    def stats(self):
-        return{
-            "health":self.health,
-            "attack":self.attack,
-            "defence":self.defence,
-            "sp_attack":self.sp_attack,
-            "sp_defence":self.sp_defence,
-            "speed":self.speed
-        }
-
     def to_dic(self):
         return{
             "image":self.image,
@@ -90,4 +77,11 @@ class Pokemon(models.Model):
             
             "moves": [move.to_dic() for move in self.moves.all()],
             "types": [type.to_dic() for type in self.types.all()]
+        }
+        
+    def to_dic_list(self):
+        return{
+           "pokemonName": self.name,
+           "pokemonId": self.pokemonId
+            
         }

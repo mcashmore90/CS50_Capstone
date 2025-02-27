@@ -8,9 +8,7 @@ const LeftPanelDisplay = ({
     currentIndex,
     selectItem,
     pokemonImage,
-    isViewDetail,
-    isLoadingPage,
-    isLeftPanelVisible
+    isViewDetail
   }) => {
     return (
       <div class="left-panel" id="left-panel" >
@@ -40,7 +38,6 @@ const LeftPanelDisplay = ({
                 currentIndex={currentIndex}
                 pokemonImage={pokemonImage}
                 isViewDetail={isViewDetail}
-                isLoadingPage={isLoadingPage}
               />
               <div class="display-bottom">
                 <div class="bottom-red-dot"></div>

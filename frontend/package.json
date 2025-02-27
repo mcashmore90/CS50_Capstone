@@ -13,11 +13,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "\"npm run build-react\" \"npm run start-django\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
-    "start-django": "cd .. && python manage.py runserver",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+
+    "makemigrations": "cd .. && python manage.py makemigrations",
+    "migrate": "cd .. && python manage.py migrate",
+    "runserver": "cd .. && python manage.py runserver"
   },
   "eslintConfig": {
     "extends": [

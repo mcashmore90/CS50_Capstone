@@ -3,7 +3,7 @@ import DetailScreen from './DetailScreen';
 import DetailControls from './DetailControls';
 import DetailScreenControls from './DetailScreenControls';
 
-const RightPanelDisplay = ({selectedPokemon,selectedTab,selectTab,isMoveDetail,isViewDetail,isRightPanelVisible}) =>{
+const RightPanelDisplay = ({selectedPokemon,selectedTab,selectTab,isMoveDetail,isViewDetail}) =>{
     const { useState,useEffect } = React;
     const [moveIndex, setMoveIndex] = useState(0);
     const [isMoreInfo, setIsMoreInfo] = useState(false)

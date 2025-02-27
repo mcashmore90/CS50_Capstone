@@ -6,11 +6,6 @@ import asyncio
 import aiohttp
 from asgiref.sync import sync_to_async
 
-#! Logging !
-# === Pokemon ===
-# == Type ==
-# = Move =
-
 class ApiService:
     @classmethod
     async def initialize_locks(cls):

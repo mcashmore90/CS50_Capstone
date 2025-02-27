@@ -320,6 +320,8 @@ Mainly Display Section of Left Panel
   margin: 0;
   font-size: 30px;
   text-align: center;
+  max-height: 220px;
+  overflow-y: hidden;
 } 
 
 /*========================
@@ -695,6 +697,14 @@ Right Panel Buttons Bottom Section
   border: var(--outline-size) solid var(--black-outline);
   border-radius: 5px;
 }
+@media (width > 860px) {
+  .right-panel{
+    display:block !important;
+  }
+  .left-panel{
+    display:block !important;
+  }
+} 
 
 @media (width <= 1000px) {
   .side-hinge{
