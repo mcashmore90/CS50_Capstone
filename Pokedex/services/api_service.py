@@ -1,4 +1,3 @@
-import requests
 from ..models import Type, Move, Pokemon
 from decimal import Decimal
 from datetime import datetime

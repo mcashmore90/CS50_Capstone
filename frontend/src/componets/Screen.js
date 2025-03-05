@@ -1,4 +1,4 @@
-import logo from '../loading_icon.png';
+
 import React, { useRef, useEffect } from 'react'
 const Screen = ({ data, currentIndex, pokemonImage }) => {
     const itemRefs = useRef([]);

@@ -1,14 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Move, Pokemon
+from .models import Pokemon
 from .services.api_service import ApiService
-from django.core.paginator import Paginator
 import asyncio
 
-limit = 6
 
 def index(request):    
-    print("index")
     return render(request, "index.html")
 
 def pokemon(request):
